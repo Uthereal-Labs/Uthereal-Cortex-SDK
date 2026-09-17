@@ -1,6 +1,6 @@
 {
-  "name": "cortex-sdk",
-  "version": "1.0.0",
+  "name": "uthereal-cortex-sdk",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "packageManager": "pnpm@10.33.0",
@@ -37,6 +37,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Uthereal-Labs/cortex-sdk.git"
+    "url": "https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git"
   }
 }

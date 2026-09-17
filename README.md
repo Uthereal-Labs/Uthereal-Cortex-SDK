@@ -1,6 +1,7 @@
-# Cortex SDK
+# Uthereal Cortex SDK
 
-Add grounded answers and retrieval from your knowledge base to an application.
+The official TypeScript SDK for Uthereal Cortex adds grounded answers and retrieval
+from your knowledge base to an application.
 Cortex returns structured evidence with durable references and claim-level
 citations. This SDK handles streaming, ownership-aware persistence, and cited
 PDF pages with highlights.
@@ -11,8 +12,8 @@ PDF pages with highlights.
 ## Try it without credentials
 
 ```sh
-git clone --branch v1.0.0 https://github.com/Uthereal-Labs/cortex-sdk.git
-cd cortex-sdk
+git clone --branch v1.0.1 https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git
+cd Uthereal-Cortex-SDK
 pnpm install --frozen-lockfile
 pnpm test
 pnpm check:edge
@@ -33,7 +34,7 @@ must configure the matching PDF.js worker; their compatibility is not certified 
 Copy this prompt into Lovable, Codex, Claude Code, Cursor, or another coding tool:
 
 ```text
-Integrate Cortex using https://github.com/Uthereal-Labs/cortex-sdk/tree/v1.0.0.
+Integrate Cortex using https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK/tree/v1.0.1.
 Read INTEGRATING.md and examples/README.md at that revision first.
 Preserve this app’s instructions, auth, history, quotas and UI conventions.
 Copy sdk/ intact; reuse its server handler, browser client and citation helpers.

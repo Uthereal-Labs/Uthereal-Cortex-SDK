@@ -1,3 +1,18 @@
+# 1.0.1 validation
+
+Branding release: repository and documentation now use Uthereal Cortex SDK.
+Public interfaces and the OpenAPI schema are unchanged from 1.0.0.
+
+- Local `pnpm verify` passed: generated type freshness, lint/format, 14 Deno tests,
+  Node handler smoke, Supabase Edge typecheck and React/Vite production build.
+- Node 22.22.1 handler smoke passed separately.
+- Independent public-content review found no credentials, customer content,
+  private backend implementation or internal operations documents. The public
+  schema intentionally exposes wire structures and some high-level architecture
+  vocabulary; this is not a legal certification of intellectual-property rights.
+- GitHub Actions quota was unavailable; these are local results.
+- No live credentialed Cortex Ask/RAG requests were made for this release.
+
 # 1.0.0 validation
 
 - `pnpm verify`: generated types, lint/format, 14 Deno contract and regression tests,
