@@ -1,0 +1,25 @@
+{
+  "id_assistant": "11111111-1111-4111-8111-111111111111",
+  "id_tenant": "fictional-tenant",
+  "id_workspace": "fictional-workspace",
+  "query": "café garden trial",
+  "results": [
+    {
+      "id_element": "element-light",
+      "id_datasource": "source-guide",
+      "content": "The fictional seedlings grew toward the window.",
+      "rank": 1,
+      "metadata": {
+        "title": "Café Garden Guide (fictional)",
+        "page": 2
+      }
+    },
+    {
+      "id_element": "element-water",
+      "id_datasource": "source-notes",
+      "content": "Watering was held constant in the fictional trial.",
+      "rank": 2,
+      "metadata": {}
+    }
+  ]
+}

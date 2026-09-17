@@ -1,0 +1,12 @@
+# Cortex SDK
+
+> Public TypeScript source for integrating Uthereal Cortex with your application.
+
+- [Start here](https://github.com/Uthereal-Labs/cortex-sdk/blob/v1.0.0/README.md)
+- [Integration guide](https://github.com/Uthereal-Labs/cortex-sdk/blob/v1.0.0/INTEGRATING.md): auth, storage, Ask, RAG, citations and PDFs
+- [Public API contract](https://github.com/Uthereal-Labs/cortex-sdk/blob/v1.0.0/openapi.json)
+- [Synthetic fixtures](https://github.com/Uthereal-Labs/cortex-sdk/tree/v1.0.0/examples): verify without credentials
+
+Use sdk/server.ts on the server and sdk/browser.ts in the frontend. Preserve the
+host application's instructions. Keep Cortex keys in server secrets. GitHub-only
+distribution; clone/download the pinned revision and copy sdk/ intact.

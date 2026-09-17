@@ -1,0 +1,24 @@
+.cortex-answer {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.cortex-evidence {
+  margin-block: 1rem;
+  padding: 1rem;
+  border: 1px solid currentColor;
+}
+.cortex-pdf {
+  width: 100%;
+  min-width: 0;
+}
+.cortex-pdf-page {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+.cortex-pdf-highlight {
+  position: absolute;
+  background: var(--cortex-highlight-fill, rgb(255 208 0 / 33%));
+  border: 1px solid var(--cortex-highlight-border, rgb(183 128 0));
+  pointer-events: none;
+}

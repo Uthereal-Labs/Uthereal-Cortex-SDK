@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env.local
+supabase/.env.local
+supabase/.temp/
+supabase/.branches/
+.cache/
+
+.pnpm-store/
+
+.env*
+!.env.example
+!**/.env.example

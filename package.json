@@ -1,0 +1,42 @@
+{
+  "name": "cortex-sdk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "dev": "vite --host localhost",
+    "build": "tsc --noEmit && vite build",
+    "test": "deno test --allow-read=examples --config deno.json tests",
+    "check:edge": "deno check --config supabase/functions/cortex/deno.json supabase/functions/cortex/index.ts",
+    "generate:types": "node scripts/generate-types.mjs",
+    "verify:types": "node scripts/generate-types.mjs --check",
+    "lint": "deno lint sdk src tests examples && deno fmt --check sdk src tests examples scripts",
+    "verify": "pnpm verify:types && pnpm lint && pnpm test && pnpm test:node && pnpm check:edge && pnpm build",
+    "test:node": "tsc -p tsconfig.node.json && node tests/node-smoke.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.104.0",
+    "@tanstack/react-query": "5.100.6",
+    "react": "19.2.5",
+    "react-dom": "19.2.5",
+    "react-pdf": "9.1.1",
+    "zod": "3.23.8",
+    "pdfjs-dist": "4.4.168"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "typescript": "5.9.3",
+    "vite": "8.0.10",
+    "openapi-typescript": "7.13.0"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.22.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Uthereal-Labs/cortex-sdk.git"
+  }
+}

@@ -1,0 +1,17 @@
+project_id = "cortex-sdk-example"
+
+[api]
+port = 55321
+[db]
+port = 55322
+shadow_port = 55320
+[studio]
+port = 55323
+[inbucket]
+port = 55324
+[analytics]
+enabled = false
+
+[functions.cortex]
+# The handler validates bearer tokens via auth.getUser(), including new signing keys.
+verify_jwt = false

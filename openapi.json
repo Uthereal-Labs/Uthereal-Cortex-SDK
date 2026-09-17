@@ -1,0 +1,3512 @@
+{
+  "components": {
+    "schemas": {
+      "ActivityEvent": {
+        "description": "Stream event carrying a browser-facing assistant activity update.",
+        "properties": {
+          "activity": {
+            "$ref": "#/components/schemas/AgentActivityStep",
+            "description": "Current public activity step after the update."
+          },
+          "interaction_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Persisted interaction turn identifier.",
+            "title": "Interaction Id"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend user-message identifier for this turn.",
+            "title": "Message Id"
+          },
+          "stream_event_type": {
+            "const": "agent_activity",
+            "default": "agent_activity",
+            "description": "Discriminator for public assistant activity stream events.",
+            "title": "Stream Event Type",
+            "type": "string"
+          },
+          "stream_request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Request identifier associated with the stream event.",
+            "title": "Stream Request Id"
+          },
+          "stream_timestamp": {
+            "description": "UTC timestamp for the stream event.",
+            "title": "Stream Timestamp",
+            "type": "string"
+          },
+          "utterance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend assistant-message identifier for this turn.",
+            "title": "Utterance Id"
+          }
+        },
+        "required": [
+          "activity",
+          "stream_event_type",
+          "stream_timestamp"
+        ],
+        "title": "ActivityEvent",
+        "type": "object"
+      },
+      "AgentActivityMetricChip": {
+        "description": "One compact public metric attached to an assistant activity step.",
+        "properties": {
+          "label": {
+            "description": "Short user-facing metric label.",
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "description": "Short user-facing metric value.",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ],
+        "title": "AgentActivityMetricChip",
+        "type": "object"
+      },
+      "AgentActivityStep": {
+        "description": "One browser-facing assistant activity step.",
+        "properties": {
+          "code": {
+            "description": "Stable public activity code.",
+            "title": "Code",
+            "type": "string"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Activity wall-clock duration in milliseconds.",
+            "title": "Duration Ms"
+          },
+          "ended_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "UTC ISO timestamp when the activity ended.",
+            "title": "Ended At"
+          },
+          "id": {
+            "description": "Stable activity identifier within the chat turn.",
+            "title": "Id",
+            "type": "string"
+          },
+          "metric_chips": {
+            "description": "Compact public metrics for this activity.",
+            "items": {
+              "$ref": "#/components/schemas/AgentActivityMetricChip"
+            },
+            "title": "Metric Chips",
+            "type": "array"
+          },
+          "phase": {
+            "description": "Stable public activity phase.",
+            "title": "Phase",
+            "type": "string"
+          },
+          "sequence": {
+            "description": "0-based ordering within the turn.",
+            "minimum": 0,
+            "title": "Sequence",
+            "type": "integer"
+          },
+          "started_at": {
+            "description": "UTC ISO timestamp when the activity started.",
+            "title": "Started At",
+            "type": "string"
+          },
+          "status": {
+            "description": "Current or final activity status.",
+            "enum": [
+              "started",
+              "completed",
+              "failed",
+              "skipped"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Short user-facing activity summary.",
+            "title": "Summary"
+          },
+          "title": {
+            "description": "Short user-facing activity title.",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sequence",
+          "phase",
+          "code",
+          "title",
+          "status",
+          "started_at"
+        ],
+        "title": "AgentActivityStep",
+        "type": "object"
+      },
+      "AskRequest": {
+        "additionalProperties": false,
+        "description": "External integrations may include their own composed conversation context.",
+        "properties": {
+          "citation_enrichment": {
+            "default": true,
+            "description": "Generate citation gists. Disable to receive plain citations and source references without enrichment model calls.",
+            "title": "Citation Enrichment",
+            "type": "boolean"
+          },
+          "detail_level": {
+            "$ref": "#/components/schemas/UserDetailLevel",
+            "default": "BALANCED",
+            "description": "Preferred response detail level for this chat request."
+          },
+          "id_user": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "message": {
+            "maxLength": 5000,
+            "minLength": 1,
+            "title": "Message",
+            "type": "string"
+          },
+          "reasoning_effort": {
+            "default": "high",
+            "description": "Cortex pipeline effort: standard composes from filtered sources; high additionally plans evidence. Does not set provider reasoning effort.",
+            "enum": [
+              "standard",
+              "high"
+            ],
+            "title": "Reasoning Effort",
+            "type": "string"
+          },
+          "technicality_level": {
+            "$ref": "#/components/schemas/UserTechnicalityLevel",
+            "default": "BALANCED",
+            "description": "Preferred technicality level for this chat request."
+          }
+        },
+        "required": [
+          "message",
+          "id_user"
+        ],
+        "title": "AskRequest",
+        "type": "object"
+      },
+      "AskStreamEvent": {
+        "description": "Structured event stream emitted by the `qai_ask_question` (bulk mode - legacy).",
+        "properties": {
+          "claims": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/UIClaim"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Rich claim objects with gist and provenance for selfserve answers.",
+            "title": "Claims"
+          },
+          "conversation_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Conversation title",
+            "title": "Conversation Title"
+          },
+          "interaction_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Persisted interaction turn identifier.",
+            "title": "Interaction Id"
+          },
+          "interaction_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Inferred title for the current interaction turn.",
+            "title": "Interaction Title"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend user-message identifier for this turn.",
+            "title": "Message Id"
+          },
+          "reference_numbering": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Maps stable evidence ID → reading-order display number (e.g., {'2': 1, '1': 2})",
+            "title": "Reference Numbering",
+            "type": "object"
+          },
+          "references": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UIReferences"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "UI-friendly references."
+          },
+          "utterance": {
+            "description": "Utterance with {{CIT:...}} placeholders",
+            "title": "Utterance",
+            "type": "string"
+          },
+          "utterance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend assistant-message identifier for this turn.",
+            "title": "Utterance Id"
+          }
+        },
+        "required": [
+          "utterance"
+        ],
+        "title": "AskStreamEvent",
+        "type": "object"
+      },
+      "ChartSeries": {
+        "description": "One numeric series to plot from a tabular result.",
+        "properties": {
+          "column": {
+            "description": "Result column name holding the numeric values to plot.",
+            "title": "Column",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Display label for the series; defaults to the column name when absent.",
+            "title": "Label"
+          }
+        },
+        "required": [
+          "column"
+        ],
+        "title": "ChartSeries",
+        "type": "object"
+      },
+      "ChartSpec": {
+        "description": "Conservative chart rendering hint derived from tabular evidence; absent means render table only.",
+        "properties": {
+          "alternatives": {
+            "description": "Other chart kinds the same data supports, offered as a user-switchable choice (e.g. pie for an additive breakdown). `kind` stays the recommended default.",
+            "items": {
+              "enum": [
+                "bar",
+                "line",
+                "pie",
+                "target"
+              ],
+              "type": "string"
+            },
+            "title": "Alternatives",
+            "type": "array"
+          },
+          "baseline": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "`target` only: reference value (the mean of the plotted values) drawn as a reference line.",
+            "title": "Baseline"
+          },
+          "direction": {
+            "anyOf": [
+              {
+                "enum": [
+                  "higher_is_better",
+                  "lower_is_better"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "`target` only: metric direction used to color values good/bad relative to `baseline`.",
+            "title": "Direction"
+          },
+          "kind": {
+            "description": "Chart type to render for this result.",
+            "enum": [
+              "bar",
+              "line",
+              "pie",
+              "target"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "max_items": {
+            "default": 12,
+            "description": "Max bars/points/slices actually plotted; the frontend slices the result to this.",
+            "title": "Max Items",
+            "type": "integer"
+          },
+          "series": {
+            "description": "One or more numeric series to plot against the x axis (`pie`/`target` use a single series).",
+            "items": {
+              "$ref": "#/components/schemas/ChartSeries"
+            },
+            "title": "Series",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional chart title.",
+            "title": "Title"
+          },
+          "truncated": {
+            "default": false,
+            "description": "True when the full result had more rows than `max_items`.",
+            "title": "Truncated",
+            "type": "boolean"
+          },
+          "x": {
+            "description": "Result column used for the category/time axis (the slice label for `pie`).",
+            "title": "X",
+            "type": "string"
+          },
+          "x_kind": {
+            "description": "Datatype signature of the x column; drives axis formatting.",
+            "enum": [
+              "category",
+              "datetime"
+            ],
+            "title": "X Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "x",
+          "x_kind",
+          "series"
+        ],
+        "title": "ChartSpec",
+        "type": "object"
+      },
+      "CitationMetadata": {
+        "description": "Bibliographic metadata attached to a referenced datasource.",
+        "properties": {
+          "article_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Article title.",
+            "title": "Article Title"
+          },
+          "bibtex_entry_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "article",
+                  "book"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "BibTeX entry type for citation export.",
+            "title": "Bibtex Entry Type"
+          },
+          "citation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Provider-supplied citation label for book-like sources.",
+            "title": "Citation"
+          },
+          "citation_enriched_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "UTC timestamp when citation metadata was enriched.",
+            "title": "Citation Enriched At"
+          },
+          "citation_source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Provider/source used to enrich citation metadata.",
+            "title": "Citation Source"
+          },
+          "citation_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Provider-supplied citation text for book-like sources.",
+            "title": "Citation Text"
+          },
+          "content_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Catalogue content type for book-like sources.",
+            "title": "Content Type"
+          },
+          "cover_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Public cover image URL for book-like sources.",
+            "title": "Cover Url"
+          },
+          "csl": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Raw CSL JSON payload from the citation provider.",
+            "title": "Csl"
+          },
+          "doi": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Digital Object Identifier.",
+            "title": "Doi"
+          },
+          "epub_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Electronic publication date, preferably ISO-like when known.",
+            "title": "Epub Date"
+          },
+          "exports": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Provider export payloads keyed by format, e.g. nbib, ris.",
+            "title": "Exports",
+            "type": "object"
+          },
+          "formatted_citations": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CitationStyle"
+            },
+            "description": "Provider-rendered citation styles keyed by citeproc style, e.g. vancouver, apa, american-medical-association.",
+            "title": "Formatted Citations",
+            "type": "object"
+          },
+          "isbn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "ISBN for book-like sources.",
+            "title": "Isbn"
+          },
+          "issn": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "ISSN for journal-like sources.",
+            "title": "Issn"
+          },
+          "issue": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Journal issue.",
+            "title": "Issue"
+          },
+          "journal_abbreviation": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Abbreviated journal title.",
+            "title": "Journal Abbreviation"
+          },
+          "journal_title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Full journal title.",
+            "title": "Journal Title"
+          },
+          "page_range": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page range or article location identifier.",
+            "title": "Page Range"
+          },
+          "pmcid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "PubMed Central identifier.",
+            "title": "Pmcid"
+          },
+          "pmid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "PubMed identifier.",
+            "title": "Pmid"
+          },
+          "publication_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Publication date, preferably ISO-like when known.",
+            "title": "Publication Date"
+          },
+          "publisher": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Publisher name.",
+            "title": "Publisher"
+          },
+          "shop_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Public catalogue/shop URL for book-like sources.",
+            "title": "Shop Url"
+          },
+          "source_kind": {
+            "$ref": "#/components/schemas/CitationSourceKind",
+            "default": "workspace",
+            "description": "High-level source family for UI labeling."
+          },
+          "subjects": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Catalogue subjects for book-like sources.",
+            "title": "Subjects"
+          },
+          "volume": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Journal volume.",
+            "title": "Volume"
+          }
+        },
+        "title": "CitationMetadata",
+        "type": "object"
+      },
+      "CitationSourceKind": {
+        "description": "Supported citation metadata source families.",
+        "enum": [
+          "qai",
+          "pubmed",
+          "workspace",
+          "external"
+        ],
+        "title": "CitationSourceKind",
+        "type": "string"
+      },
+      "CitationStyle": {
+        "description": "One formatted citation style returned by an upstream citation provider.",
+        "properties": {
+          "html": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "HTML citation, when the provider returns markup.",
+            "title": "Html"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Plain-text citation.",
+            "title": "Text"
+          }
+        },
+        "title": "CitationStyle",
+        "type": "object"
+      },
+      "ExternalRAGHit": {
+        "description": "One bounded Uthereal-native retrieval hit.",
+        "properties": {
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "id_datasource": {
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "id_element": {
+            "title": "Id Element",
+            "type": "string"
+          },
+          "metadata": {
+            "additionalProperties": true,
+            "title": "Metadata",
+            "type": "object"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id_element",
+          "id_datasource",
+          "content",
+          "rank"
+        ],
+        "title": "ExternalRAGHit",
+        "type": "object"
+      },
+      "PdfRefreshRequest": {
+        "additionalProperties": false,
+        "description": "Input for refreshing a secure reference PDF URL from persisted chat references.",
+        "properties": {
+          "id_assistant": {
+            "description": "Assistant identifier for the conversation.",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Id Assistant",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Referenced datasource identifier.",
+            "minLength": 1,
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "id_session": {
+            "description": "Conversation session identifier.",
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Id Session",
+            "type": "string"
+          },
+          "inline_reference_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional stable inline reference identifier.",
+            "title": "Inline Reference Id"
+          },
+          "interaction_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional persisted interaction identifier.",
+            "title": "Interaction Id"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Referenced PDF page to preserve in the refreshed URL.",
+            "title": "Page"
+          }
+        },
+        "required": [
+          "id_assistant",
+          "id_session",
+          "id_datasource"
+        ],
+        "title": "PdfRefreshRequest",
+        "type": "object"
+      },
+      "PdfRefreshResponse": {
+        "description": "Fresh secure URL for a reference PDF.",
+        "properties": {
+          "secure_url": {
+            "description": "Alias for url, retained for client compatibility.",
+            "title": "Secure Url",
+            "type": "string"
+          },
+          "url": {
+            "description": "Fresh secure reference PDF URL.",
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "secure_url"
+        ],
+        "title": "PdfRefreshResponse",
+        "type": "object"
+      },
+      "QaiAbstractReferenceEvidence": {
+        "additionalProperties": false,
+        "description": "Exact source-provided abstract admitted by a published generation.",
+        "properties": {
+          "content_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Content Sha256",
+            "type": "string"
+          },
+          "id_element": {
+            "minLength": 1,
+            "title": "Id Element",
+            "type": "string"
+          },
+          "kind": {
+            "const": "abstract",
+            "default": "abstract",
+            "title": "Kind",
+            "type": "string"
+          },
+          "processed_generation": {
+            "minLength": 1,
+            "title": "Processed Generation",
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "quintessence",
+              "pubmed"
+            ],
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content_sha256",
+          "id_element",
+          "kind",
+          "processed_generation",
+          "provider"
+        ],
+        "title": "QaiAbstractReferenceEvidence",
+        "type": "object"
+      },
+      "QaiCatalogAggregateReference": {
+        "additionalProperties": false,
+        "description": "Canonical count result observed directly from Mongo.",
+        "properties": {
+          "group_by": {
+            "items": {
+              "enum": [
+                "series",
+                "year",
+                "language",
+                "journal",
+                "article_type"
+              ],
+              "type": "string"
+            },
+            "maxItems": 2,
+            "title": "Group By",
+            "type": "array"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "query_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Query Digest",
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/QaiCatalogAggregateReferenceRow"
+            },
+            "maxItems": 200,
+            "title": "Rows",
+            "type": "array"
+          },
+          "total_count": {
+            "minimum": 0,
+            "title": "Total Count",
+            "type": "integer"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "group_by",
+          "rows",
+          "total_count",
+          "query_digest",
+          "observed_at"
+        ],
+        "title": "QaiCatalogAggregateReference",
+        "type": "object"
+      },
+      "QaiCatalogAggregateReferenceRow": {
+        "additionalProperties": false,
+        "description": "One bounded count bucket shown by an aggregate citation.",
+        "properties": {
+          "count": {
+            "minimum": 1,
+            "title": "Count",
+            "type": "integer"
+          },
+          "dimensions": {
+            "items": {
+              "$ref": "#/components/schemas/QaiCatalogReferenceDimensionValue"
+            },
+            "maxItems": 2,
+            "title": "Dimensions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "dimensions",
+          "count"
+        ],
+        "title": "QaiCatalogAggregateReferenceRow",
+        "type": "object"
+      },
+      "QaiCatalogMetadataField": {
+        "description": "Public metadata fields permitted in QAI v2 answer evidence.",
+        "enum": [
+          "title",
+          "year",
+          "edition",
+          "language",
+          "content_type",
+          "isbn",
+          "authors",
+          "author",
+          "series",
+          "series_volume",
+          "subjects",
+          "subject",
+          "journal",
+          "journal_abbreviation",
+          "issn",
+          "doi",
+          "pmid",
+          "publication_date",
+          "epub_date",
+          "volume",
+          "issue",
+          "page_range",
+          "article_type",
+          "duration_seconds",
+          "book_video_association"
+        ],
+        "title": "QaiCatalogMetadataField",
+        "type": "string"
+      },
+      "QaiCatalogRecordReference": {
+        "additionalProperties": false,
+        "description": "Canonical datasource metadata observed directly from Mongo.",
+        "properties": {
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/QaiCatalogReferenceFact"
+            },
+            "maxItems": 24,
+            "minItems": 1,
+            "title": "Facts",
+            "type": "array"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/QaiPublicCatalogLink"
+            },
+            "maxItems": 32,
+            "title": "Links",
+            "type": "array"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "query_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Query Digest",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "facts",
+          "query_digest",
+          "observed_at"
+        ],
+        "title": "QaiCatalogRecordReference",
+        "type": "object"
+      },
+      "QaiCatalogReferenceDimensionValue": {
+        "additionalProperties": false,
+        "description": "One semantic aggregate dimension value.",
+        "properties": {
+          "dimension": {
+            "enum": [
+              "series",
+              "year",
+              "language",
+              "journal",
+              "article_type"
+            ],
+            "title": "Dimension",
+            "type": "string"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "required": [
+          "dimension"
+        ],
+        "title": "QaiCatalogReferenceDimensionValue",
+        "type": "object"
+      },
+      "QaiCatalogReferenceFact": {
+        "additionalProperties": false,
+        "description": "One canonical metadata field/value shown by a catalog citation.",
+        "properties": {
+          "field": {
+            "$ref": "#/components/schemas/QaiCatalogMetadataField"
+          },
+          "value": {
+            "minLength": 1,
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "value"
+        ],
+        "title": "QaiCatalogReferenceFact",
+        "type": "object"
+      },
+      "QaiCorpusSourceKind": {
+        "description": "Source lane represented by QAI v2 citation provenance.",
+        "enum": [
+          "books",
+          "articles",
+          "videos",
+          "pubmed"
+        ],
+        "title": "QaiCorpusSourceKind",
+        "type": "string"
+      },
+      "QaiPDFReferenceEvidence": {
+        "additionalProperties": false,
+        "description": "Generation-bound PDF evidence for book or article citations.",
+        "properties": {
+          "kind": {
+            "const": "pdf_pages",
+            "default": "pdf_pages",
+            "title": "Kind",
+            "type": "string"
+          },
+          "page_memberships": {
+            "items": {
+              "$ref": "#/components/schemas/QaiReferencePageMembership"
+            },
+            "minItems": 1,
+            "title": "Page Memberships",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "page_memberships"
+        ],
+        "title": "QaiPDFReferenceEvidence",
+        "type": "object"
+      },
+      "QaiPublicCatalogLink": {
+        "additionalProperties": false,
+        "description": "One labelled, publisher-owned link that is safe for UI presentation.",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/QaiPublicCatalogLinkKind"
+          },
+          "label": {
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "url": {
+            "maxLength": 2048,
+            "minLength": 1,
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind",
+          "label",
+          "url"
+        ],
+        "title": "QaiPublicCatalogLink",
+        "type": "object"
+      },
+      "QaiPublicCatalogLinkKind": {
+        "description": "Publisher-owned link roles rendered by QAI v2 references.",
+        "enum": [
+          "shop",
+          "cover",
+          "author_profile",
+          "series",
+          "journal"
+        ],
+        "title": "QaiPublicCatalogLinkKind",
+        "type": "string"
+      },
+      "QaiReferenceBinding": {
+        "additionalProperties": false,
+        "description": "Typed provenance for one QAI v2 content or canonical-catalog citation.\n\nContent bindings remain release/generation-bound. Catalog bindings are\npoint-in-time Mongo observations and deliberately carry no release or\ngeneration identity.",
+        "properties": {
+          "catalog_aggregate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiCatalogAggregateReference"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "catalog_record": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiCatalogRecordReference"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "discriminator": {
+                  "mapping": {
+                    "abstract": "#/components/schemas/QaiAbstractReferenceEvidence",
+                    "pdf_pages": "#/components/schemas/QaiPDFReferenceEvidence",
+                    "video_interval": "#/components/schemas/QaiVideoReferenceEvidence"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/QaiPDFReferenceEvidence"
+                  },
+                  {
+                    "$ref": "#/components/schemas/QaiVideoReferenceEvidence"
+                  },
+                  {
+                    "$ref": "#/components/schemas/QaiAbstractReferenceEvidence"
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Evidence"
+          },
+          "id_database": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Id Database"
+          },
+          "id_datasource": {
+            "minLength": 1,
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "content_pdf",
+              "content_video",
+              "content_abstract",
+              "catalog_record",
+              "catalog_aggregate"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "release_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Release Id"
+          },
+          "schema_version": {
+            "const": "qai-reference-binding.v3",
+            "default": "qai-reference-binding.v3",
+            "title": "Schema Version",
+            "type": "string"
+          },
+          "source_file_fingerprint": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source File Fingerprint"
+          },
+          "source_generation_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Generation Id"
+          },
+          "source_kind": {
+            "$ref": "#/components/schemas/QaiCorpusSourceKind"
+          },
+          "source_record_fingerprint": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Source Record Fingerprint"
+          },
+          "workspace": {
+            "$ref": "#/components/schemas/WorkspaceReference"
+          }
+        },
+        "required": [
+          "id_datasource",
+          "kind",
+          "schema_version",
+          "source_kind",
+          "workspace"
+        ],
+        "title": "QaiReferenceBinding",
+        "type": "object"
+      },
+      "QaiReferencePageMembership": {
+        "additionalProperties": false,
+        "description": "One physical PDF page and its exact cited evidence elements.",
+        "properties": {
+          "element_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Element Ids",
+            "type": "array"
+          },
+          "page_index": {
+            "minimum": 0,
+            "title": "Page Index",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "page_index",
+          "element_ids"
+        ],
+        "title": "QaiReferencePageMembership",
+        "type": "object"
+      },
+      "QaiVideoInspectionProvenance": {
+        "additionalProperties": false,
+        "description": "Immutable inspection data required to refresh cited video frames.",
+        "properties": {
+          "cited_frame_ids": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "title": "Cited Frame Ids",
+            "type": "array"
+          },
+          "manifest_id": {
+            "pattern": "^vim_[0-9a-f]{32}$",
+            "title": "Manifest Id",
+            "type": "string"
+          },
+          "manifest_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Manifest Sha256",
+            "type": "string"
+          },
+          "packet_id": {
+            "pattern": "^vep_[0-9a-f]{32}$",
+            "title": "Packet Id",
+            "type": "string"
+          },
+          "source_generation_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Source Generation Sha256",
+            "type": "string"
+          }
+        },
+        "required": [
+          "manifest_id",
+          "packet_id",
+          "manifest_sha256",
+          "source_generation_sha256",
+          "cited_frame_ids"
+        ],
+        "title": "QaiVideoInspectionProvenance",
+        "type": "object"
+      },
+      "QaiVideoReferenceEvidence": {
+        "additionalProperties": false,
+        "description": "Generation-bound interval evidence for one private video citation.",
+        "properties": {
+          "id_element": {
+            "minLength": 1,
+            "title": "Id Element",
+            "type": "string"
+          },
+          "inspection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiVideoInspectionProvenance"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "kind": {
+            "const": "video_interval",
+            "default": "video_interval",
+            "title": "Kind",
+            "type": "string"
+          },
+          "time_end_ms": {
+            "exclusiveMinimum": 0,
+            "title": "Time End Ms",
+            "type": "integer"
+          },
+          "time_start_ms": {
+            "minimum": 0,
+            "title": "Time Start Ms",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id_element",
+          "kind",
+          "time_end_ms",
+          "time_start_ms"
+        ],
+        "title": "QaiVideoReferenceEvidence",
+        "type": "object"
+      },
+      "RagRequest": {
+        "additionalProperties": false,
+        "description": "External RAG request over an assistant's primary workspace.",
+        "properties": {
+          "datasource_ids": {
+            "items": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            },
+            "maxItems": 50,
+            "title": "Datasource Ids",
+            "type": "array"
+          },
+          "id_user": {
+            "maxLength": 256,
+            "minLength": 1,
+            "type": "string"
+          },
+          "max_results": {
+            "default": 10,
+            "maximum": 20,
+            "minimum": 1,
+            "title": "Max Results",
+            "type": "integer"
+          },
+          "query": {
+            "maxLength": 500,
+            "minLength": 1,
+            "title": "Query",
+            "type": "string"
+          }
+        },
+        "required": [
+          "query"
+        ],
+        "title": "RagRequest",
+        "type": "object"
+      },
+      "RagResponse": {
+        "description": "Bounded retrieval response for external API clients.",
+        "properties": {
+          "id_assistant": {
+            "title": "Id Assistant",
+            "type": "string"
+          },
+          "id_tenant": {
+            "title": "Id Tenant",
+            "type": "string"
+          },
+          "id_workspace": {
+            "title": "Id Workspace",
+            "type": "string"
+          },
+          "query": {
+            "title": "Query",
+            "type": "string"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/ExternalRAGHit"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id_assistant",
+          "id_tenant",
+          "id_workspace",
+          "query",
+          "results"
+        ],
+        "title": "RagResponse",
+        "type": "object"
+      },
+      "StatusEvent": {
+        "description": "Status-only stream event used to keep long-running responses alive.",
+        "properties": {
+          "interaction_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Persisted interaction turn identifier.",
+            "title": "Interaction Id"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend user-message identifier for this turn.",
+            "title": "Message Id"
+          },
+          "stream_event_type": {
+            "const": "status",
+            "default": "status",
+            "description": "Discriminator for status-only stream events.",
+            "title": "Stream Event Type",
+            "type": "string"
+          },
+          "stream_message": {
+            "description": "Human-readable progress message for status-only stream events.",
+            "title": "Stream Message",
+            "type": "string"
+          },
+          "stream_phase": {
+            "description": "Machine-readable phase for status-only stream events.",
+            "title": "Stream Phase",
+            "type": "string"
+          },
+          "stream_request_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Request identifier associated with the stream event.",
+            "title": "Stream Request Id"
+          },
+          "stream_timestamp": {
+            "description": "UTC timestamp for the stream event.",
+            "title": "Stream Timestamp",
+            "type": "string"
+          },
+          "utterance_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Frontend assistant-message identifier for this turn.",
+            "title": "Utterance Id"
+          }
+        },
+        "required": [
+          "stream_event_type",
+          "stream_message",
+          "stream_phase",
+          "stream_timestamp"
+        ],
+        "title": "StatusEvent",
+        "type": "object"
+      },
+      "UICatalogAggregateReference": {
+        "additionalProperties": false,
+        "description": "Bounded canonical Mongo count result for a QAI catalog question.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "group_by": {
+            "items": {
+              "enum": [
+                "series",
+                "year",
+                "language",
+                "journal",
+                "article_type"
+              ],
+              "type": "string"
+            },
+            "maxItems": 2,
+            "title": "Group By",
+            "type": "array"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "observed_at": {
+            "minLength": 1,
+            "title": "Observed At",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "query_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Query Digest",
+            "type": "string"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/QaiCatalogAggregateReferenceRow"
+            },
+            "maxItems": 200,
+            "title": "Rows",
+            "type": "array"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "total_count": {
+            "minimum": 0,
+            "title": "Total Count",
+            "type": "integer"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          },
+          "type": {
+            "const": "catalog_aggregate",
+            "default": "catalog_aggregate",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_by",
+          "id",
+          "id_datasource",
+          "observed_at",
+          "query_digest",
+          "rows",
+          "title",
+          "total_count",
+          "type"
+        ],
+        "title": "UICatalogAggregateReference",
+        "type": "object"
+      },
+      "UICatalogRecordReference": {
+        "additionalProperties": false,
+        "description": "Point-in-time canonical Mongo metadata for one QAI datasource.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "facts": {
+            "items": {
+              "$ref": "#/components/schemas/QaiCatalogReferenceFact"
+            },
+            "maxItems": 24,
+            "minItems": 1,
+            "title": "Facts",
+            "type": "array"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "links": {
+            "items": {
+              "$ref": "#/components/schemas/QaiPublicCatalogLink"
+            },
+            "maxItems": 32,
+            "title": "Links",
+            "type": "array"
+          },
+          "observed_at": {
+            "minLength": 1,
+            "title": "Observed At",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "query_digest": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Query Digest",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "const": "catalog_record",
+            "default": "catalog_record",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "facts",
+          "id",
+          "id_datasource",
+          "observed_at",
+          "query_digest",
+          "title",
+          "type"
+        ],
+        "title": "UICatalogRecordReference",
+        "type": "object"
+      },
+      "UICitationGistReference": {
+        "description": "Inline reference dedicated to selfserve citation-gist rationale rendering.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "gist": {
+            "description": "Short user-facing rationale for this GIST occurrence.",
+            "title": "Gist",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "type": {
+            "const": "citation_gist",
+            "default": "citation_gist",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "gist",
+          "id",
+          "id_datasource",
+          "type"
+        ],
+        "title": "UICitationGistReference",
+        "type": "object"
+      },
+      "UIClaim": {
+        "description": "Rich claim object grouping all occurrences of a single evidence-planner claim.",
+        "properties": {
+          "cited_ui_ids": {
+            "description": "UI reference IDs for frontend lookup.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Cited Ui Ids",
+            "type": "array"
+          },
+          "claim_id": {
+            "description": "Original claim ID from evidence planner (e.g. 'c0-0').",
+            "title": "Claim Id",
+            "type": "string"
+          },
+          "claim_text": {
+            "description": "The atomic claim statement from the evidence planner.",
+            "title": "Claim Text",
+            "type": "string"
+          },
+          "evidence_ids": {
+            "description": "Original DB element IDs backing this claim.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Evidence Ids",
+            "type": "array"
+          },
+          "occurrences": {
+            "description": "Per-occurrence gists, one for each position in the answer.",
+            "items": {
+              "$ref": "#/components/schemas/UIClaimOccurrence"
+            },
+            "title": "Occurrences",
+            "type": "array"
+          },
+          "rationale": {
+            "default": "",
+            "description": "Planner's rationale for why the evidence supports this claim.",
+            "title": "Rationale",
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id",
+          "claim_text"
+        ],
+        "title": "UIClaim",
+        "type": "object"
+      },
+      "UIClaimOccurrence": {
+        "description": "One position in the answer where a claim is cited, with a contextualised gist.",
+        "properties": {
+          "gist": {
+            "default": "",
+            "description": "LLM-generated explanation tailored to this position in the answer.",
+            "title": "Gist",
+            "type": "string"
+          },
+          "id": {
+            "description": "1-based sequential ID (matches {{GIST:n}} token in the text).",
+            "title": "Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "UIClaimOccurrence",
+        "type": "object"
+      },
+      "UIDatasourceReference": {
+        "description": "Abstract class representing a resource being referenced.",
+        "properties": {
+          "authors": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Authors of the datasource",
+            "title": "Authors"
+          },
+          "citation_metadata": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CitationMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Structured and/or provider-rendered citation metadata for bibliography rendering."
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Description of the datasource.",
+            "title": "Description"
+          },
+          "id": {
+            "description": "Unique identifier of the datasource.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_tenant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "If the `provenance == workspace`, then the id of the tenant.",
+            "title": "Id Tenant"
+          },
+          "id_workspace": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "If the `provenance == workspace`, then the id of the workspace.",
+            "title": "Id Workspace"
+          },
+          "parent_book": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UIParentBookReference"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Book accompanying this video; does not imply that book content was inspected."
+          },
+          "provenance": {
+            "default": "workspace",
+            "enum": [
+              "workspace",
+              "external"
+            ],
+            "title": "Provenance",
+            "type": "string"
+          },
+          "secure_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Secure tokenized URL for scoped private-source access.",
+            "title": "Secure Url"
+          },
+          "source_type": {
+            "anyOf": [
+              {
+                "enum": [
+                  "book",
+                  "journal",
+                  "image",
+                  "video",
+                  "pubmed",
+                  "table",
+                  "catalog",
+                  "product",
+                  "source"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Derived source type for UI reference labeling. Present on newly materialized references.",
+            "title": "Source Type"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Title of the datasource",
+            "title": "Title"
+          },
+          "url": {
+            "description": "URL to access the resource.",
+            "title": "Url",
+            "type": "string"
+          },
+          "year": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Year of publication of the datasource",
+            "title": "Year"
+          }
+        },
+        "required": [
+          "id",
+          "url"
+        ],
+        "title": "UIDatasourceReference",
+        "type": "object"
+      },
+      "UIExternalLinkReference": {
+        "description": "Class representing a link to an external resource.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "type": {
+            "const": "external_link",
+            "default": "external_link",
+            "title": "Type",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Public source link for this evidence, independent of an optional datasource PDF URL.",
+            "title": "Url"
+          }
+        },
+        "required": [
+          "id",
+          "id_datasource",
+          "type"
+        ],
+        "title": "UIExternalLinkReference",
+        "type": "object"
+      },
+      "UIExternalTimedVideoReference": {
+        "additionalProperties": false,
+        "description": "Public exact YouTube transcript snippet with a deterministic playback interval.",
+        "properties": {
+          "content": {
+            "description": "Exact non-empty transcript snippet used as citable evidence.",
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "platform": {
+            "const": "youtube",
+            "default": "youtube",
+            "description": "Public video platform hosting the evidence.",
+            "title": "Platform",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "section_id": {
+            "description": "Canonical parent semantic-section identifier containing this snippet.",
+            "minLength": 1,
+            "title": "Section Id",
+            "type": "string"
+          },
+          "section_title": {
+            "description": "Containing semantic section title for navigation only, never factual support.",
+            "minLength": 1,
+            "title": "Section Title",
+            "type": "string"
+          },
+          "time_end_ms": {
+            "description": "Exclusive exact transcript-snippet end offset in milliseconds.",
+            "minimum": 0,
+            "title": "Time End Ms",
+            "type": "integer"
+          },
+          "time_start_ms": {
+            "description": "Inclusive public playback start offset in milliseconds.",
+            "minimum": 0,
+            "title": "Time Start Ms",
+            "type": "integer"
+          },
+          "timeline_order": {
+            "description": "Stable source-timeline order for chronological evidence rendering.",
+            "minimum": 0,
+            "title": "Timeline Order",
+            "type": "integer"
+          },
+          "type": {
+            "const": "external_timed_video",
+            "default": "external_timed_video",
+            "title": "Type",
+            "type": "string"
+          },
+          "video_id": {
+            "description": "Canonical YouTube video identifier.",
+            "pattern": "^[A-Za-z0-9_-]{11}$",
+            "title": "Video Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "id",
+          "id_datasource",
+          "platform",
+          "section_id",
+          "section_title",
+          "time_end_ms",
+          "time_start_ms",
+          "timeline_order",
+          "type",
+          "video_id"
+        ],
+        "title": "UIExternalTimedVideoReference",
+        "type": "object"
+      },
+      "UIImageReference": {
+        "description": "Class representing an image.",
+        "properties": {
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Caption associated with the image.",
+            "title": "Caption"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "coordinates": {
+            "anyOf": [
+              {
+                "maxItems": 4,
+                "minItems": 4,
+                "prefixItems": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "(x0, y0, x1, y1) in PDF coordinate space when available.",
+            "title": "Coordinates"
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page height in the same coordinate space when available.",
+            "title": "Height"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "page": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page number when the image is located in a PDF.",
+            "title": "Page"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "type": {
+            "const": "image",
+            "default": "image",
+            "title": "Type",
+            "type": "string"
+          },
+          "url": {
+            "description": "Presigned image URL.",
+            "title": "Url",
+            "type": "string"
+          },
+          "width": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Page width in the same coordinate space when available.",
+            "title": "Width"
+          }
+        },
+        "required": [
+          "caption",
+          "id",
+          "id_datasource",
+          "type",
+          "url"
+        ],
+        "title": "UIImageReference",
+        "type": "object"
+      },
+      "UIPDFHighlightReference": {
+        "description": "Class representing an highligh region in a PDF.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "coordinates": {
+            "description": "(x0, y0, x1, y1) in PDF coordinate space.",
+            "maxItems": 4,
+            "minItems": 4,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "title": "Coordinates",
+            "type": "array"
+          },
+          "height": {
+            "description": "Page height in the same coordinate space.",
+            "title": "Height",
+            "type": "number"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "page": {
+            "description": "Page number.",
+            "title": "Page",
+            "type": "integer"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "type": {
+            "const": "pdf_highlight",
+            "default": "pdf_highlight",
+            "title": "Type",
+            "type": "string"
+          },
+          "width": {
+            "description": "Page width in the same coordinate space.",
+            "title": "Width",
+            "type": "number"
+          }
+        },
+        "required": [
+          "coordinates",
+          "height",
+          "id",
+          "id_datasource",
+          "page",
+          "type",
+          "width"
+        ],
+        "title": "UIPDFHighlightReference",
+        "type": "object"
+      },
+      "UIParentBookLocation": {
+        "description": "Verified placement of an accompanying video in a book's table of contents.",
+        "properties": {
+          "node_id": {
+            "description": "Parent book ToC node identifier.",
+            "title": "Node Id",
+            "type": "string"
+          },
+          "page_index": {
+            "description": "Zero-based physical PDF page, not the printed page label.",
+            "minimum": 0,
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "page_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Verified printed book page label; omitted when unavailable.",
+            "title": "Page Label"
+          },
+          "title": {
+            "description": "Section title from the parent book.",
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "node_id",
+          "title",
+          "page_index"
+        ],
+        "title": "UIParentBookLocation",
+        "type": "object"
+      },
+      "UIParentBookReference": {
+        "description": "Publication provenance for a video, separate from inspected book evidence.",
+        "properties": {
+          "datasource": {
+            "$ref": "#/components/schemas/UIDatasourceReference",
+            "description": "The normal book reference payload, rendered through the shared book citation path."
+          },
+          "locations": {
+            "description": "Verified book locations associated with the video.",
+            "items": {
+              "$ref": "#/components/schemas/UIParentBookLocation"
+            },
+            "title": "Locations",
+            "type": "array"
+          }
+        },
+        "required": [
+          "datasource"
+        ],
+        "title": "UIParentBookReference",
+        "type": "object"
+      },
+      "UIReferences": {
+        "description": "Complete reference payload returned with an utterance for client rendering.",
+        "properties": {
+          "datasources": {
+            "description": "List of dataources associated with the response. Inline references are linked via `ref.id_datasource`.",
+            "items": {
+              "$ref": "#/components/schemas/UIDatasourceReference"
+            },
+            "title": "Datasources",
+            "type": "array"
+          },
+          "inline": {
+            "description": "List of inline references.",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/UIPDFHighlightReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UIImageReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UIVideoReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UIExternalLinkReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UIExternalTimedVideoReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UICitationGistReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UITableReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UICatalogRecordReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UICatalogAggregateReference"
+                }
+              ]
+            },
+            "title": "Inline",
+            "type": "array"
+          }
+        },
+        "title": "UIReferences",
+        "type": "object"
+      },
+      "UITableReference": {
+        "description": "Class representing selected rows from a tabular (CSV) source.",
+        "properties": {
+          "catalog_context": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Ingestion-authored table, column, and relationship context for the selected rows.",
+            "title": "Catalog Context"
+          },
+          "chart": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ChartSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional chart rendering hint for the selected rows; absent means render the table only."
+          },
+          "columns": {
+            "description": "Selected column names, in order.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Columns",
+            "type": "array"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "rows": {
+            "description": "Selected row cells, keyed by column name. Already capped upstream.",
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Source table title.",
+            "title": "Title"
+          },
+          "total_count": {
+            "default": 0,
+            "description": "True match count from the unbounded SQL operation; may exceed len(rows).",
+            "title": "Total Count",
+            "type": "integer"
+          },
+          "type": {
+            "const": "table",
+            "default": "table",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "id_datasource",
+          "type"
+        ],
+        "title": "UITableReference",
+        "type": "object"
+      },
+      "UIVideoFrameReference": {
+        "additionalProperties": false,
+        "description": "One inspected frame authorized independently from its source video.",
+        "properties": {
+          "id": {
+            "description": "Stable inspected-frame identifier.",
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "media_type": {
+            "const": "image/jpeg",
+            "default": "image/jpeg",
+            "description": "Media type of the inspected frame.",
+            "title": "Media Type",
+            "type": "string"
+          },
+          "sha256": {
+            "description": "SHA-256 checksum of the inspected JPEG.",
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Sha256",
+            "type": "string"
+          },
+          "time_ms": {
+            "description": "Frame timestamp in the source video, in milliseconds.",
+            "minimum": 0,
+            "title": "Time Ms",
+            "type": "integer"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Short-lived capability URL for this exact inspected frame.",
+            "title": "Url"
+          }
+        },
+        "required": [
+          "id",
+          "media_type",
+          "sha256",
+          "time_ms"
+        ],
+        "title": "UIVideoFrameReference",
+        "type": "object"
+      },
+      "UIVideoReference": {
+        "additionalProperties": false,
+        "description": "Strict half-open video evidence interval with independently authorized inspected frames.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "frames": {
+            "default": [],
+            "description": "Only frames inspected while grounding this citation.",
+            "items": {
+              "$ref": "#/components/schemas/UIVideoFrameReference"
+            },
+            "title": "Frames",
+            "type": "array"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_database": {
+            "description": "Database generation containing the source element.",
+            "minLength": 1,
+            "title": "Id Database",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "id_element": {
+            "description": "Source video element represented by this citation.",
+            "minLength": 1,
+            "title": "Id Element",
+            "type": "string"
+          },
+          "inspection_manifest_id": {
+            "anyOf": [
+              {
+                "pattern": "^vim_[0-9a-f]{32}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opaque immutable inspection manifest identity.",
+            "title": "Inspection Manifest Id"
+          },
+          "inspection_manifest_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Checksum binding the inspected frame inventory.",
+            "title": "Inspection Manifest Sha256"
+          },
+          "inspection_packet_id": {
+            "anyOf": [
+              {
+                "pattern": "^vep_[0-9a-f]{32}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opaque immutable inspection packet identity.",
+            "title": "Inspection Packet Id"
+          },
+          "playback_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Short-lived capability URL bound to this exact inline interval.",
+            "title": "Playback Url"
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "related_book_section_ids": {
+            "default": [],
+            "description": "Exact reviewed book-section relations used for cross-source navigation.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Related Book Section Ids",
+            "type": "array"
+          },
+          "review_state": {
+            "description": "Whether this is automatic provider evidence or a reviewed section.",
+            "enum": [
+              "provider_observation",
+              "reviewed"
+            ],
+            "title": "Review State",
+            "type": "string"
+          },
+          "section_id": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Reviewed section identifier when this citation represents a section.",
+            "title": "Section Id"
+          },
+          "section_path": {
+            "default": [],
+            "description": "Reviewed section hierarchy path.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Section Path",
+            "type": "array"
+          },
+          "section_title": {
+            "anyOf": [
+              {
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Reviewed section title when available.",
+            "title": "Section Title"
+          },
+          "segment_strategy": {
+            "anyOf": [
+              {
+                "enum": [
+                  "azure_scene",
+                  "fixed_window"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Automatic segment boundary source, used to select playback context independently of evidence.",
+            "title": "Segment Strategy"
+          },
+          "source_file_hash": {
+            "description": "SHA-256 checksum of the indexed source video.",
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Source File Hash",
+            "type": "string"
+          },
+          "source_generation_sha256": {
+            "anyOf": [
+              {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Checksum binding the inspected source generation.",
+            "title": "Source Generation Sha256"
+          },
+          "time_end_ms": {
+            "description": "Exclusive evidence end offset in milliseconds.",
+            "minimum": 0,
+            "title": "Time End Ms",
+            "type": "integer"
+          },
+          "time_start_ms": {
+            "description": "Inclusive playback start offset in milliseconds.",
+            "minimum": 0,
+            "title": "Time Start Ms",
+            "type": "integer"
+          },
+          "type": {
+            "const": "video",
+            "default": "video",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "id_database",
+          "id_datasource",
+          "id_element",
+          "review_state",
+          "source_file_hash",
+          "time_end_ms",
+          "time_start_ms",
+          "type"
+        ],
+        "title": "UIVideoReference",
+        "type": "object"
+      },
+      "UserDetailLevel": {
+        "enum": [
+          "SUCCINCT",
+          "BALANCED",
+          "DETAILED"
+        ],
+        "title": "UserDetailLevel",
+        "type": "string"
+      },
+      "UserTechnicalityLevel": {
+        "enum": [
+          "SIMPLE",
+          "BALANCED",
+          "TECHNICAL"
+        ],
+        "title": "UserTechnicalityLevel",
+        "type": "string"
+      },
+      "WorkspaceReference": {
+        "properties": {
+          "id_app": {
+            "title": "Id App",
+            "type": "string"
+          },
+          "id_tenant": {
+            "title": "Id Tenant",
+            "type": "string"
+          },
+          "id_workspace": {
+            "title": "Id Workspace",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id_app",
+          "id_tenant",
+          "id_workspace"
+        ],
+        "title": "WorkspaceReference",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "assistantKey": {
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Generated supported integration surface. Use the exact Cortex Edge proxy base URL from your assistant setup. Other response fields may be present. Errors use HTTP status and diagnostic bodies; see CortexError in the SDK.",
+    "title": "Cortex public API",
+    "version": "1.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/chat/reference/pdf/refresh": {
+      "post": {
+        "operationId": "refreshPdf",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-App-Code",
+            "required": true,
+            "schema": {
+              "const": "selfserve",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-External-User-Id",
+            "required": true,
+            "schema": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PdfRefreshRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PdfRefreshResponse"
+                }
+              }
+            },
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/chat/reference/pdf/{token}": {
+      "get": {
+        "operationId": "pdf",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-App-Code",
+            "required": true,
+            "schema": {
+              "const": "selfserve",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-External-User-Id",
+            "required": true,
+            "schema": {
+              "maxLength": 256,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": true,
+            "schema": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/external/v1/assistants/{assistant}/rag": {
+      "post": {
+        "operationId": "rag",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assistant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-App-Code",
+            "required": true,
+            "schema": {
+              "const": "selfserve",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RagRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RagResponse"
+                }
+              }
+            },
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/external/v1/assistants/{assistant}/sessions/{external_session}/ask": {
+      "post": {
+        "description": "Newline-delimited JSON events, NOT SSE data frames. Each utterance is a complete snapshot. Unknown additional event fields may be present.",
+        "operationId": "ask",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "assistant",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "external_session",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-App-Code",
+            "required": true,
+            "schema": {
+              "const": "selfserve",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/AskStreamEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/StatusEvent"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ActivityEvent"
+                    }
+                  ]
+                }
+              }
+            },
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "assistantKey": []
+    }
+  ]
+}

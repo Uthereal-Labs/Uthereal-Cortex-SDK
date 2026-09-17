@@ -1,0 +1,271 @@
+{
+  "snapshots": [
+    {
+      "utterance": "",
+      "interaction_id": "22222222-2222-4222-8222-222222222222",
+      "references": {
+        "datasources": [
+          {
+            "id": "source-guide",
+            "title": "Café Garden Guide (fictional)",
+            "url": "/chat/reference/pdf/fixture.only.invalid?page=2"
+          },
+          {
+            "id": "source-notes",
+            "title": "Garden Notes (fictional)",
+            "url": "https://example.invalid/garden-notes"
+          }
+        ],
+        "inline": [
+          {
+            "id": "ref-light",
+            "type": "pdf_highlight",
+            "id_datasource": "source-guide",
+            "page": 2,
+            "coordinates": [
+              60,
+              160,
+              300,
+              320
+            ],
+            "width": 600,
+            "height": 800
+          }
+        ]
+      },
+      "reference_numbering": {
+        "ref-light": 7
+      },
+      "claims": [
+        {
+          "claim_id": "claim-light",
+          "claim_text": "The fictional seedlings grew toward the window.",
+          "cited_ui_ids": [
+            "ref-light"
+          ],
+          "occurrences": [
+            {
+              "id": 1,
+              "gist": "The guide describes growth toward light."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "utterance": "Café seedlings 🌱 grew toward the window. {{GIST:1}}",
+      "interaction_id": "22222222-2222-4222-8222-222222222222",
+      "references": {
+        "datasources": [
+          {
+            "id": "source-guide",
+            "title": "Café Garden Guide (fictional)",
+            "url": "/chat/reference/pdf/fixture.only.invalid?page=2"
+          },
+          {
+            "id": "source-notes",
+            "title": "Garden Notes (fictional)",
+            "url": "https://example.invalid/garden-notes"
+          }
+        ],
+        "inline": [
+          {
+            "id": "ref-light",
+            "type": "pdf_highlight",
+            "id_datasource": "source-guide",
+            "page": 2,
+            "coordinates": [
+              60,
+              160,
+              300,
+              320
+            ],
+            "width": 600,
+            "height": 800
+          }
+        ]
+      },
+      "reference_numbering": {
+        "ref-light": 7
+      },
+      "claims": [
+        {
+          "claim_id": "claim-light",
+          "claim_text": "The fictional seedlings grew toward the window.",
+          "cited_ui_ids": [
+            "ref-light"
+          ],
+          "occurrences": [
+            {
+              "id": 1,
+              "gist": "The guide describes growth toward light."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "utterance": "Café seedlings 🌱 grew toward the window. {{GIST:1}} The same observation appears twice. {{GIST:2}} Watering was held constant. {{CIT:ref-note,ref-light}}",
+      "interaction_id": "22222222-2222-4222-8222-222222222222",
+      "references": {
+        "datasources": [
+          {
+            "id": "source-guide",
+            "title": "Café Garden Guide (fictional)",
+            "url": "/chat/reference/pdf/fixture.only.invalid?page=2"
+          },
+          {
+            "id": "source-notes",
+            "title": "Garden Notes (fictional)",
+            "url": "https://example.invalid/garden-notes"
+          }
+        ],
+        "inline": [
+          {
+            "id": "ref-light",
+            "type": "pdf_highlight",
+            "id_datasource": "source-guide",
+            "page": 2,
+            "coordinates": [
+              60,
+              160,
+              300,
+              320
+            ],
+            "width": 600,
+            "height": 800
+          },
+          {
+            "id": "ref-note",
+            "type": "citation_gist",
+            "id_datasource": "source-notes",
+            "content": "The fictional trial kept watering constant.",
+            "gist": "Watering stayed constant while the seedlings grew toward light."
+          }
+        ]
+      },
+      "reference_numbering": {
+        "ref-light": 7,
+        "ref-note": 9
+      },
+      "claims": [
+        {
+          "claim_id": "claim-light",
+          "claim_text": "The fictional seedlings grew toward the window.",
+          "cited_ui_ids": [
+            "ref-light"
+          ],
+          "occurrences": [
+            {
+              "id": 1,
+              "gist": "The guide describes growth toward light."
+            },
+            {
+              "id": 2,
+              "gist": "A second mention uses the same claim."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "finalAnswer": {
+    "utterance": "Café seedlings 🌱 grew toward the window. {{GIST:1}} The same observation appears twice. {{GIST:2}} Watering was held constant. {{CIT:ref-note,ref-light}}",
+    "interaction_id": "22222222-2222-4222-8222-222222222222",
+    "references": {
+      "datasources": [
+        {
+          "id": "source-guide",
+          "title": "Café Garden Guide (fictional)",
+          "url": "/chat/reference/pdf/fixture.only.invalid?page=2"
+        },
+        {
+          "id": "source-notes",
+          "title": "Garden Notes (fictional)",
+          "url": "https://example.invalid/garden-notes"
+        }
+      ],
+      "inline": [
+        {
+          "id": "ref-light",
+          "type": "pdf_highlight",
+          "id_datasource": "source-guide",
+          "page": 2,
+          "coordinates": [
+            60,
+            160,
+            300,
+            320
+          ],
+          "width": 600,
+          "height": 800
+        },
+        {
+          "id": "ref-note",
+          "type": "citation_gist",
+          "id_datasource": "source-notes",
+          "content": "The fictional trial kept watering constant.",
+          "gist": "Watering stayed constant while the seedlings grew toward light."
+        }
+      ]
+    },
+    "reference_numbering": {
+      "ref-light": 7,
+      "ref-note": 9
+    },
+    "claims": [
+      {
+        "claim_id": "claim-light",
+        "claim_text": "The fictional seedlings grew toward the window.",
+        "cited_ui_ids": [
+          "ref-light"
+        ],
+        "occurrences": [
+          {
+            "id": 1,
+            "gist": "The guide describes growth toward light."
+          },
+          {
+            "id": 2,
+            "gist": "A second mention uses the same claim."
+          }
+        ]
+      }
+    ]
+  },
+  "markers": [
+    {
+      "kind": "GIST",
+      "ids": "1",
+      "inlineIds": [
+        "ref-light"
+      ]
+    },
+    {
+      "kind": "GIST",
+      "ids": "2",
+      "inlineIds": [
+        "ref-light"
+      ]
+    },
+    {
+      "kind": "CIT",
+      "ids": "ref-note,ref-light",
+      "inlineIds": [
+        "ref-note",
+        "ref-light"
+      ]
+    }
+  ],
+  "locations": {
+    "ref-light": {
+      "sourcePage": 2,
+      "slicePage": 2,
+      "left": 10,
+      "top": 20,
+      "width": 40,
+      "height": 20
+    },
+    "ref-note": null
+  }
+}

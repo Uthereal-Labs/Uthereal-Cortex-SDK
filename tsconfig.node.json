@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rewriteRelativeImportExtensions": true,
+    "outDir": ".cache/node",
+    "rootDir": "."
+  },
+  "include": [
+    "sdk/server.ts",
+    "sdk/core.ts",
+    "sdk/browser.ts"
+  ]
+}

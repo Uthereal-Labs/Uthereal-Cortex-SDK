@@ -1,0 +1,30 @@
+{
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.104.0",
+    "zod": "npm:zod@3.23.8",
+    "@std/assert": "jsr:@std/assert@1"
+  },
+  "compilerOptions": {
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
+  },
+  "fmt": {
+    "exclude": [
+      "sdk/protocol/openapi.generated.ts"
+    ]
+  },
+  "lint": {
+    "exclude": [
+      "sdk/protocol/openapi.generated.ts"
+    ],
+    "rules": {
+      "exclude": [
+        "require-await"
+      ]
+    }
+  }
+}
