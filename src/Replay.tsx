@@ -30,7 +30,7 @@ export function Replay() {
   });
   return (
     <main>
-      <h1>Cortex SDK replay</h1>
+      <h1>Uthereal Cortex SDK replay</h1>
       <p>Synthetic evidence. No API key or live agent is used.</p>
       {ask && (
         <>

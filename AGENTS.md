@@ -1,4 +1,4 @@
-# Cortex SDK contributor instructions
+# Uthereal Cortex SDK contributor instructions
 
 For integration into another app, read [INTEGRATING.md](INTEGRATING.md). Preserve
 that app’s own instructions and conventions; do not overwrite its AGENTS.md.

@@ -96,7 +96,7 @@ export function App() {
   );
   return (
     <main>
-      <h1>Cortex SDK example</h1>
+      <h1>Uthereal Cortex SDK example</h1>
       {!userId
         ? (
           <form action={submit}>

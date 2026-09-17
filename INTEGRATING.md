@@ -1,6 +1,6 @@
 # Integrate Cortex into your application
 
-Use this guide for cited chat or retrieval-only integrations. Preserve your application’s authentication, history, quotas and UI conventions. The SDK is distributed as TypeScript source from [Uthereal-Labs/cortex-sdk](https://github.com/Uthereal-Labs/cortex-sdk).
+Use this guide for cited chat or retrieval-only integrations. Preserve your application’s authentication, history, quotas and UI conventions. The SDK is distributed as TypeScript source from [Uthereal-Labs/Uthereal-Cortex-SDK](https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK).
 
 ## Generated types and replay fixtures
 
@@ -22,7 +22,7 @@ your own test harness. Ask streams snapshots; RAG returns one JSON result.
 
 ## Use SDK v1
 
-The `sdk/` directory is tested TypeScript source, version 1.0.0. Copy it intact
+The `sdk/` directory is tested TypeScript source, version 1.0.1. Copy it intact
 into your application. Install the SDK dependencies listed in `package.json`
 (`zod`, TanStack Query and React-PDF with its matching PDF.js worker; Supabase
 only when using that adapter). Retain your host application’s React/React-DOM
