@@ -1,0 +1,105 @@
+name: Publish npm package
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing reviewed tag on main (vX.Y.Z or vX.Y.Z-rc.N)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: npm-publication
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.ref == 'refs/heads/main' && github.repository == 'Uthereal-Labs/Uthereal-Cortex-SDK'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      dist_tag: ${{ steps.release.outputs.dist_tag }}
+      commit: ${{ steps.release.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.0
+          cache: pnpm
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.7.11
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:package
+      - id: release
+        run: pnpm verify:release
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+      - name: Record artifact digest
+        run: sha256sum .cache/package/*.tgz > .cache/package/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: npm-package
+          path: .cache/package/
+          include-hidden-files: true
+          if-no-files-found: error
+  publish:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate.outputs.commit }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.20.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-package
+          path: .cache/package/
+      - run: sha256sum --check .cache/package/SHA256SUMS
+      - name: Publish the validated archive through OIDC
+        # Git ancestry/tag/cleanliness were checked before artifact upload.
+        # Publishing this tarball must not rerun lifecycle scripts or rebuild it.
+        run: pnpm publish ".cache/package/uthereal-sdk-cortex-${RELEASE_VERSION}.tgz" --access public --tag "$DIST_TAG" --provenance --ignore-scripts --no-git-checks
+        env:
+          RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+          DIST_TAG: ${{ needs.validate.outputs.dist_tag }}
+      - name: Verify registry artifact and provenance
+        run: node scripts/verify-registry.mjs
+        env:
+          RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+          RELEASE_COMMIT: ${{ needs.validate.outputs.commit }}
+  release:
+    needs: [validate, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: npm-package
+          path: package/
+      - name: Attach validated package to GitHub release
+        run: gh release create "$RELEASE_TAG" package/* --verify-tag --generate-notes --title "$RELEASE_TAG" $PRERELEASE
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          PRERELEASE: ${{ needs.validate.outputs.dist_tag == 'next' && '--prerelease' || '' }}

@@ -9,10 +9,29 @@ PDF pages with highlights.
 **Start here:** [Integration guide](INTEGRATING.md) · [API contract](openapi.json) ·
 [Replay fixtures](examples/README.md) · [Contributing](CONTRIBUTING.md)
 
+## Install
+
+```sh
+pnpm add --save-exact @uthereal-sdk/cortex@1.1.0-rc.0
+```
+
+```ts
+// Backend only
+import { createCortexHandler } from "@uthereal-sdk/cortex/server";
+// Browser
+import { createCortexBrowserClient } from "@uthereal-sdk/cortex/browser";
+```
+
+The package is ESM and includes JavaScript and TypeScript declarations. Core,
+server and browser consumers install only Zod transitively. React and Supabase
+are optional; install the peers for your selected entry points as described in
+[INTEGRATING.md](INTEGRATING.md). npm users can use `npm install` with the same
+package and version. Releases are published to npm; pnpm is a package manager.
+
 ## Try it without credentials
 
 ```sh
-git clone --branch v1.0.1 https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git
+git clone --branch v1.1.0-rc.0 https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git
 cd Uthereal-Cortex-SDK
 pnpm install --frozen-lockfile
 pnpm test
@@ -34,10 +53,12 @@ must configure the matching PDF.js worker; their compatibility is not certified 
 Copy this prompt into Lovable, Codex, Claude Code, Cursor, or another coding tool:
 
 ```text
-Integrate Cortex using https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK/tree/v1.0.1.
+Integrate Cortex using https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK/tree/v1.1.0-rc.0.
 Read INTEGRATING.md and examples/README.md at that revision first.
 Preserve this app’s instructions, auth, history, quotas and UI conventions.
-Copy sdk/ intact; reuse its server handler, browser client and citation helpers.
+Install @uthereal-sdk/cortex@1.1.0-rc.0 with this app’s package manager.
+Reuse /server on the backend, /browser in the frontend, /core for helpers,
+and /react for optional citation UI. Install only the required optional peers.
 Keep CORTEX_SHARED_API_KEY in server secrets only.
 Map authentication and storage using CortexActor and CortexStore.
 Use my assistant ID and API base from Cortex Share’s integration instructions.
@@ -45,22 +66,23 @@ Run the SDK checks and the host application’s checks. Report fixture and live
 verification separately. Do not overwrite this application’s agent instructions.
 ```
 
-Tools that cannot fetch GitHub can use the release source ZIP attached to the
-prompt. The SDK is distributed through GitHub only; no registry installation is
-required. Copy `sdk/` intact into an existing app and record the release/commit.
+For source-copy integrations, clone/download the pinned GitHub release and copy
+`sdk/` intact. Record the revision and install its dependencies. Existing source
+users can keep their current revision until deliberately upgrading.
 
 ## Choose the pieces you need
 
 | Entry point | Use |
 | --- | --- |
-| `sdk/server.ts` | Server-only Fetch handler, auth/store contracts and low-level client |
-| `sdk/browser.ts` | Authenticated calls to your application's backend |
-| `sdk/core.ts` | Browser-safe types, validators, stream and citation helpers |
-| `sdk/react.ts` | Optional cited-answer and PDF evidence components |
-| `sdk/adapters/` | Optional Supabase auth and persistence adapters |
+| `@uthereal-sdk/cortex/server` | Server-only Fetch handler, auth/store contracts and low-level client |
+| `@uthereal-sdk/cortex/browser` | Authenticated calls to your application's backend |
+| `@uthereal-sdk/cortex/core` | Browser-safe types, validators, stream and citation helpers |
+| `@uthereal-sdk/cortex/react` | Optional cited-answer and PDF evidence components |
+| `@uthereal-sdk/cortex/adapters/*` | Optional Supabase auth and persistence adapters |
 
 Core/server/browser need `zod` 3.23.8. React evidence additionally needs React
 18/19, TanStack Query 5, React-PDF 9.1.1 and its matching PDF.js 4.4.168 worker.
+The installed package includes the matching worker and scoped CSS.
 Supabase adapters additionally need `@supabase/supabase-js` 2.104.0. Use the pinned
 example dependencies as the tested baseline; keep your app's React version.
 

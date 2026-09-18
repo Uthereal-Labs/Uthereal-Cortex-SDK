@@ -23,6 +23,7 @@
     ],
     "packageJson": {
       "dependencies": [
+        "npm:@playwright/test@1.58.2",
         "npm:@supabase/supabase-js@2.104.0",
         "npm:@tanstack/react-query@5.100.6",
         "npm:@types/react-dom@19.2.3",
