@@ -12,6 +12,7 @@ import {
 } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
+import { setTimeout as delay } from "node:timers/promises";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 
@@ -287,22 +288,29 @@ export default {build: {outDir: 'dist-pdf', rollupOptions: {input: 'pdf-only.ts'
       "--strictPort",
     ], { cwd: app, stdio: ["ignore", "pipe", "pipe"] });
     try {
-      await new Promise((resolveReady, reject) => {
-        const timeout = setTimeout(
-          () => reject(new Error("Vite preview timed out")),
-          30000,
-        );
-        server.stdout.on("data", (data) => {
-          if (data.toString().includes("127.0.0.1:4179")) {
-            clearTimeout(timeout);
-            resolveReady();
-          }
-        });
-        server.on("exit", (code) => {
-          clearTimeout(timeout);
-          reject(new Error(`Vite exited: ${code}`));
-        });
+      let serverOutput = "";
+      server.stderr.on("data", (data) => {
+        serverOutput += data.toString();
       });
+      server.stdout.on("data", (data) => {
+        serverOutput += data.toString();
+      });
+      const deadline = Date.now() + 30000;
+      while (true) {
+        if (server.exitCode !== null) {
+          throw new Error(`Vite exited: ${serverOutput}`);
+        }
+        try {
+          const response = await fetch("http://127.0.0.1:4179", {
+            signal: AbortSignal.timeout(1000),
+          });
+          if (response.ok) break;
+        } catch { /* The local preview server is still starting. */ }
+        if (Date.now() >= deadline) {
+          throw new Error(`Vite preview timed out: ${serverOutput}`);
+        }
+        await delay(100);
+      }
       const browser = await chromium.launch({ headless: true });
       try {
         const page = await browser.newPage();

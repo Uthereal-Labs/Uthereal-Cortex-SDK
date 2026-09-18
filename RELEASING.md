@@ -53,7 +53,7 @@ dispatches. Keep npm 2FA enabled and disallow publishing through bypass-2FA
 tokens. No repository npm token is required. If your npm role cannot change
 these settings, an organization owner must configure them.
 
-The release workflow pins Node 24.21.0 with a compatible bundled npm CLI;
+The release workflow pins Node 24.20.0 with a compatible bundled npm CLI;
 pnpm 10 delegates publication to that CLI. OIDC requires npm 11.5.1 or later.
 Publish stable 1.1.0 through this workflow after the release candidate passes.
 
