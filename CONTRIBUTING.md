@@ -10,15 +10,12 @@ For protocol changes, coordinate a backend PR with an SDK PR updating
 `pnpm verify:types`. The backend pins the reviewed SDK revision and verifies its
 schema against the service models. No backend source is needed in this repo.
 
-To integrate into another app, copy sdk/ intact, install only the dependencies
-for your chosen entry points, and follow INTEGRATING.md. Report the source
-revision with issues; upgrades are deliberate replacements after changelog review.
+To integrate into another app, install the released package or copy sdk/ intact;
+follow INTEGRATING.md and report the package version/source revision with issues.
 
 ## Releases
 
-Use semantic versions for the SDK's public interfaces. Before tagging, update
-package.json and sdk/version.ts, document changes in CHANGELOG.md, and require
-CI plus an independent review of public content. Tag the validated commit and
-create its GitHub release. The GitHub source archive is the distribution artifact.
-No npm or PyPI publish workflow is configured. A future registry release is a
-separate change with package-consumer and provenance validation.
+Follow [RELEASING.md](RELEASING.md). Require CI, packed-package consumer checks
+and an independent review of public content. Update package.json, sdk/version.ts,
+the changelog and pinned documentation together. Never rewrite published tags.
+The implementation remains under sdk/; generated dist/ is not committed.

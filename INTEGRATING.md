@@ -1,6 +1,6 @@
 # Integrate Cortex into your application
 
-Use this guide for cited chat or retrieval-only integrations. Preserve your application’s authentication, history, quotas and UI conventions. The SDK is distributed as TypeScript source from [Uthereal-Labs/Uthereal-Cortex-SDK](https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK).
+Use this guide for cited chat or retrieval-only integrations. Preserve your application’s authentication, history, quotas and UI conventions. Install the ESM npm package `@uthereal-sdk/cortex`, or use pinned TypeScript source from [Uthereal-Labs/Uthereal-Cortex-SDK](https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK).
 
 ## Generated types and replay fixtures
 
@@ -22,28 +22,61 @@ your own test harness. Ask streams snapshots; RAG returns one JSON result.
 
 ## Use SDK v1
 
-The `sdk/` directory is tested TypeScript source, version 1.0.1. Copy it intact
-into your application. Install the SDK dependencies listed in `package.json`
-(`zod`, TanStack Query and React-PDF with its matching PDF.js worker; Supabase
-only when using that adapter). Retain your host application’s React/React-DOM
-and matching types: the SDK components support React 18 and 19. The complete
-runnable demo uses React 19 Actions and pins React 19 for its own installation.
-Existing integrations can retain their SDK revision until deliberately upgraded. The example SQL creates fresh tables only. Map your existing storage
-explicitly through `CortexStore` when integrating into an existing application.
+Install an exact release and commit your application's lockfile:
+
+```sh
+pnpm add --save-exact @uthereal-sdk/cortex@1.1.0-rc.0
+```
+
+Use your application's existing package manager (`npm install` also works).
+The package root and `/core` are browser-safe. `/server` belongs only in your
+backend. The package is ESM; CommonJS `require()` is not a supported interface.
+
+| Integration | Additional dependencies |
+| --- | --- |
+| Core, server, browser | None; Zod 3.23.8 is installed by the package |
+| React evidence | Existing React/React-DOM 18 or 19; `@tanstack/react-query@5.100.6`, `react-pdf@9.1.1`, `pdfjs-dist@4.4.168` |
+| Supabase adapters | `@supabase/supabase-js@2.104.0` |
+
+```sh
+# Only if using the React evidence components; retain your app's React version.
+pnpm add @tanstack/react-query@5.100.6 react-pdf@9.1.1 pdfjs-dist@4.4.168
+# Only if using the optional Supabase adapters.
+pnpm add @supabase/supabase-js@2.104.0
+```
+
+The React entry point includes scoped CSS and a local matching PDF worker.
+`@uthereal-sdk/cortex/styles.css` is also exported for explicit stylesheet imports.
+Keep React-PDF and PDF.js at the documented matching versions. React components
+must run on the client; with Next.js use a client component and disable server
+rendering for the PDF viewer. The server handler uses standard Fetch Request and
+Response objects and can be mounted in a Node server or Next.js route handler.
+The certified rendering setup is React/Vite; other bundlers need their own worker
+and rendering verification.
+
+### Source-copy alternative
+
+Clone/download the pinned v1.1.0-rc.0 GitHub revision and copy `sdk/` intact. Use
+`./sdk/server.ts`, `./sdk/browser.ts`, etc. instead of package imports below, and
+install Zod 3.23.8 plus the optional dependencies you use. The complete runnable
+demo pins React 19; existing apps can retain React 18 or 19 and matching types.
+Existing integrations can retain their SDK revision until deliberately upgraded.
+The example SQL creates fresh tables only. Map existing storage explicitly
+through `CortexStore`; do not apply the demo schema blindly.
 
 | Entry point | Responsibility |
 | --- | --- |
-| `sdk/core.ts` | Generated wire types, runtime validators, accumulated `Answer`, citation/geometry helpers and `CortexError` |
-| `sdk/server.ts` | Server-only `createCortexHandler`, `CortexStore`/identity contracts and low-level `CortexClient` |
-| `sdk/browser.ts` | Authenticated application-server client: create, ask, RAG and PDF |
-| `sdk/react.ts` | `CitedAnswer` and `PdfEvidence`, with injected `loadPdf` and account-specific `authScope` |
-| `sdk/adapters/supabase-server.ts` | Verified Supabase authentication and optional example table adapter |
-| `sdk/adapters/supabase-browser.ts` | Fetch adapter using the current Supabase session |
+| `@uthereal-sdk/cortex/core` | Generated wire types, runtime validators, accumulated `Answer`, citation/geometry helpers and `CortexError` |
+| `@uthereal-sdk/cortex/server` | Server-only `createCortexHandler`, `CortexStore`/identity contracts and low-level `CortexClient` |
+| `@uthereal-sdk/cortex/browser` | Authenticated application-server client: create, ask, RAG and PDF |
+| `@uthereal-sdk/cortex/react` | `CitedAnswer` and `PdfEvidence`, with injected `loadPdf` and account-specific `authScope` |
+| `@uthereal-sdk/cortex/adapters/supabase-server` | Verified Supabase authentication and optional example table adapter |
+| `@uthereal-sdk/cortex/adapters/supabase-browser` | Fetch adapter using the current Supabase session |
 
 ### Plug into your existing backend
 
 ```ts
-import { createCortexHandler, type CortexStore } from "./sdk/server.ts";
+import { createCortexHandler, type CortexStore } from "@uthereal-sdk/cortex/server";
 
 const handler = createCortexHandler({
   config: { baseUrl, assistantId, apiKey }, // server secrets/configuration
@@ -68,8 +101,8 @@ entitlement and concurrency checks in your authentication/store boundary.
 ### Plug into your frontend
 
 ```tsx
-import { createCortexBrowserClient } from "./sdk/browser.ts";
-import { CitedAnswer } from "./sdk/react.ts";
+import { createCortexBrowserClient } from "@uthereal-sdk/cortex/browser";
+import { CitedAnswer } from "@uthereal-sdk/cortex/react";
 
 const cortex = createCortexBrowserClient({
   endpoint: "https://your-app.example/cortex",
@@ -104,7 +137,7 @@ Use `PdfEvidence` directly inside your own dialog when adapting the presentation
 `CortexClient` is available for lower-level server integrations; the full handler
 is the default because it also owns persistence completion and authorization.
 Core helpers (`readAnswers`, `mergeAnswer`, `resolveMarker`, `pdfLocation`) remain
-available through `sdk/core.ts`. Do not rebuild their parsing or renewal logic.
+available through `@uthereal-sdk/cortex/core`. Do not rebuild their parsing or renewal logic.
 
 ## Preview without credentials
 

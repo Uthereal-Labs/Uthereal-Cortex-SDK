@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Document, Page, pdfjs } from "react-pdf";
 import { type InlineReference, pdfLocation } from "../core.ts";
 import type { PdfLoader } from "../browser.ts";
+import "./styles.css";
 
 // Bundle the worker matching the pinned renderer; no CDN or private Cortex UI dependency.
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(

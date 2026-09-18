@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0-rc.0
+
+- Add the public ESM package `@uthereal-sdk/cortex` with typed core, server, browser, React and optional Supabase entry points.
+- Include scoped styles and a matching local PDF worker; retain source-copy compatibility.
+- Add isolated packed-package checks and a GitHub OIDC release workflow.
+- Preserve existing public interfaces and the Cortex wire contract.
+
 ## 1.0.1
 
 - Rename the authoritative repository to Uthereal-Labs/Uthereal-Cortex-SDK.
