@@ -12,7 +12,7 @@ PDF pages with highlights.
 ## Install
 
 ```sh
-pnpm add --save-exact @uthereal-sdk/cortex@1.1.0-rc.0
+pnpm add --save-exact @uthereal-sdk/cortex@1.1.0
 ```
 
 ```ts
@@ -31,7 +31,7 @@ package and version. Releases are published to npm; pnpm is a package manager.
 ## Try it without credentials
 
 ```sh
-git clone --branch v1.1.0-rc.0 https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git
+git clone --branch v1.1.0 https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK.git
 cd Uthereal-Cortex-SDK
 pnpm install --frozen-lockfile
 pnpm test
@@ -53,10 +53,10 @@ must configure the matching PDF.js worker; their compatibility is not certified 
 Copy this prompt into Lovable, Codex, Claude Code, Cursor, or another coding tool:
 
 ```text
-Integrate Cortex using https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK/tree/v1.1.0-rc.0.
+Integrate Cortex using https://github.com/Uthereal-Labs/Uthereal-Cortex-SDK/tree/v1.1.0.
 Read INTEGRATING.md and examples/README.md at that revision first.
 Preserve this app’s instructions, auth, history, quotas and UI conventions.
-Install @uthereal-sdk/cortex@1.1.0-rc.0 with this app’s package manager.
+Install @uthereal-sdk/cortex@1.1.0 with this app’s package manager.
 Reuse /server on the backend, /browser in the frontend, /core for helpers,
 and /react for optional citation UI. Install only the required optional peers.
 Keep CORTEX_SHARED_API_KEY in server secrets only.
