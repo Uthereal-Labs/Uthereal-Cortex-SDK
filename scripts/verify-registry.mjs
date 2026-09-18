@@ -1,16 +1,42 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
+
+// New packages and attestations can take time to reach registry read replicas.
+// Retry reads only; never replay a publication or accept a different artifact.
+async function publishedJson(url, ready = () => true) {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const response = await fetch(url, {
+      headers: { "Cache-Control": "no-cache" },
+      signal: AbortSignal.timeout(30_000),
+    });
+    assert.ok(
+      response.ok || response.status === 404,
+      `Registry read: ${response.status}`,
+    );
+    if (response.ok) {
+      const body = await response.json();
+      if (ready(body)) return body;
+    }
+    if (attempt < 5) {
+      console.log(
+        "Waiting for registry propagation; checking again in 3 minutes",
+      );
+      await delay(180_000);
+    }
+  }
+  throw new Error(`Registry propagation did not complete: ${url}`);
+}
 
 const version = process.env.RELEASE_VERSION;
 assert.match(version ?? "", /^\d+\.\d+\.\d+(?:-rc\.\d+)?$/);
 const commit = process.env.RELEASE_COMMIT;
 assert.match(commit ?? "", /^[a-f0-9]{40}$/);
-const response = await fetch(
+const metadata = await publishedJson(
   `https://registry.npmjs.org/@uthereal-sdk%2Fcortex/${version}`,
+  (body) => Boolean(body.dist?.attestations?.url),
 );
-assert.ok(response.ok, `Registry metadata: ${response.status}`);
-const metadata = await response.json();
 const archive = await readFile(
   `.cache/package/uthereal-sdk-cortex-${version}.tgz`,
 );
@@ -26,9 +52,7 @@ assert.ok(
   metadata.dist.attestations?.url,
   "Registry is missing provenance attestations",
 );
-const attestationResponse = await fetch(metadata.dist.attestations.url);
-assert.ok(attestationResponse.ok, "Cannot read registry attestations");
-const attestations = await attestationResponse.json();
+const attestations = await publishedJson(metadata.dist.attestations.url);
 const provenance = attestations.attestations.find((item) =>
   item.predicateType === "https://slsa.dev/provenance/v1"
 );
