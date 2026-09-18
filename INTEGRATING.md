@@ -25,7 +25,7 @@ your own test harness. Ask streams snapshots; RAG returns one JSON result.
 Install an exact release and commit your application's lockfile:
 
 ```sh
-pnpm add --save-exact @uthereal-sdk/cortex@1.1.0-rc.0
+pnpm add --save-exact @uthereal-sdk/cortex@1.1.0
 ```
 
 Use your application's existing package manager (`npm install` also works).
@@ -56,7 +56,7 @@ and rendering verification.
 
 ### Source-copy alternative
 
-Clone/download the pinned v1.1.0-rc.0 GitHub revision and copy `sdk/` intact. Use
+Clone/download the pinned v1.1.0 GitHub revision and copy `sdk/` intact. Use
 `./sdk/server.ts`, `./sdk/browser.ts`, etc. instead of package imports below, and
 install Zod 3.23.8 plus the optional dependencies you use. The complete runnable
 demo pins React 19; existing apps can retain React 18 or 19 and matching types.
@@ -114,7 +114,7 @@ for await (const update of cortex.ask(conversationId, { message }, signal)) {
   else reloadSavedAnswer(update.messageId);
 }
 // Inside your existing QueryClientProvider:
-<CitedAnswer key={accountId} answer={saved.answer} messageId={saved.id}
+<CitedAnswer key={`${backendId}:${tenantId}:${accountId}`} answer={saved.answer} messageId={saved.id}
   authScope={`${backendId}:${tenantId}:${accountId}`} loadPdf={cortex.pdf} />;
 ```
 

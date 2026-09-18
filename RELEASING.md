@@ -36,7 +36,7 @@ Publish the already-tested archive with interactive authentication:
 
 ```sh
 RELEASE_TAG=v1.1.0-rc.0 pnpm verify:release
-pnpm publish .cache/package/uthereal-sdk-cortex-1.1.0-rc.0.tgz --access public --tag next --ignore-scripts
+pnpm publish .cache/package/uthereal-sdk-cortex-1.1.0-rc.0.tgz --access public --tag next --ignore-scripts --publish-branch main
 ```
 
 This local bootstrap has no GitHub provenance and must not become `latest`.

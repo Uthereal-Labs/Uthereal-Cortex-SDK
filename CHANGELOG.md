@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0
+
+- Publish the validated `@uthereal-sdk/cortex` ESM package with GitHub provenance.
+- Keep source-copy integrations and the existing Cortex protocol compatible.
+- Ensure standalone `PdfEvidence` imports retain their scoped stylesheet.
+
+
 ## 1.1.0-rc.0
 
 - Add the public ESM package `@uthereal-sdk/cortex` with typed core, server, browser, React and optional Supabase entry points.
