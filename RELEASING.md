@@ -39,7 +39,10 @@ RELEASE_TAG=v1.1.0-rc.0 pnpm verify:release
 pnpm publish .cache/package/uthereal-sdk-cortex-1.1.0-rc.0.tgz --access public --tag next --ignore-scripts --publish-branch main
 ```
 
-This local bootstrap has no GitHub provenance and must not become `latest`.
+This local bootstrap has no GitHub provenance. npm can assign the first package
+version to `latest` even when publication explicitly requests `next`; verify the
+dist-tags after bootstrap and do not announce the package until the validated
+stable release replaces that initial default.
 Configure the package's trusted publisher on npm with:
 
 - GitHub organization: `Uthereal-Labs`
