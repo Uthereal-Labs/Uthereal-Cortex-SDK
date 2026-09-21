@@ -150,6 +150,19 @@
             "title": "Metric Chips",
             "type": "array"
           },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Public parent activity ID for nested work.",
+            "title": "Parent Id"
+          },
           "phase": {
             "description": "Stable public activity phase.",
             "title": "Phase",
@@ -1093,7 +1106,9 @@
                 "year",
                 "language",
                 "journal",
-                "article_type"
+                "article_type",
+                "subject",
+                "keyword"
               ],
               "type": "string"
             },
@@ -1179,6 +1194,7 @@
           "series",
           "series_volume",
           "subjects",
+          "keywords",
           "subject",
           "journal",
           "journal_abbreviation",
@@ -1253,7 +1269,9 @@
               "year",
               "language",
               "journal",
-              "article_type"
+              "article_type",
+              "subject",
+              "keyword"
             ],
             "title": "Dimension",
             "type": "string"
@@ -1315,6 +1333,14 @@
         "additionalProperties": false,
         "description": "Generation-bound PDF evidence for book or article citations.",
         "properties": {
+          "image_descriptions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Visually validated descriptions keyed by cited image element; retained when refreshing saved references.",
+            "title": "Image Descriptions",
+            "type": "object"
+          },
           "kind": {
             "const": "pdf_pages",
             "default": "pdf_pages",
@@ -1838,7 +1864,9 @@
                 "year",
                 "language",
                 "journal",
-                "article_type"
+                "article_type",
+                "subject",
+                "keyword"
               ],
               "type": "string"
             },
@@ -2800,6 +2828,9 @@
                   "$ref": "#/components/schemas/UIVideoReference"
                 },
                 {
+                  "$ref": "#/components/schemas/UIVideoSourceReference"
+                },
+                {
                   "$ref": "#/components/schemas/UIExternalLinkReference"
                 },
                 {
@@ -3230,6 +3261,54 @@
           "type"
         ],
         "title": "UIVideoReference",
+        "type": "object"
+      },
+      "UIVideoSourceReference": {
+        "additionalProperties": false,
+        "description": "Full original video, with moment evidence retained only on the server.",
+        "properties": {
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "playback_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Protected playback URL for the original video.",
+            "title": "Playback Url"
+          },
+          "source_file_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Source File Hash",
+            "type": "string"
+          },
+          "type": {
+            "const": "video_source",
+            "default": "video_source",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "id_datasource",
+          "source_file_hash",
+          "type"
+        ],
+        "title": "UIVideoSourceReference",
         "type": "object"
       },
       "UserDetailLevel": {

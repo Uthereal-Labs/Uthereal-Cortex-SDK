@@ -166,6 +166,12 @@ export interface components {
              */
             metric_chips?: components["schemas"]["AgentActivityMetricChip"][];
             /**
+             * Parent Id
+             * @description Public parent activity ID for nested work.
+             * @default null
+             */
+            parent_id?: string | null;
+            /**
              * Phase
              * @description Stable public activity phase.
              */
@@ -665,7 +671,7 @@ export interface components {
          */
         QaiCatalogAggregateReference: {
             /** Group By */
-            group_by: ("series" | "year" | "language" | "journal" | "article_type")[];
+            group_by: ("series" | "year" | "language" | "journal" | "article_type" | "subject" | "keyword")[];
             /**
              * Observed At
              * Format: date-time
@@ -698,7 +704,7 @@ export interface components {
          * @description Public metadata fields permitted in QAI v2 answer evidence.
          * @enum {string}
          */
-        QaiCatalogMetadataField: "title" | "year" | "edition" | "language" | "content_type" | "isbn" | "authors" | "author" | "series" | "series_volume" | "subjects" | "subject" | "journal" | "journal_abbreviation" | "issn" | "doi" | "pmid" | "publication_date" | "epub_date" | "volume" | "issue" | "page_range" | "article_type" | "duration_seconds" | "book_video_association";
+        QaiCatalogMetadataField: "title" | "year" | "edition" | "language" | "content_type" | "isbn" | "authors" | "author" | "series" | "series_volume" | "subjects" | "keywords" | "subject" | "journal" | "journal_abbreviation" | "issn" | "doi" | "pmid" | "publication_date" | "epub_date" | "volume" | "issue" | "page_range" | "article_type" | "duration_seconds" | "book_video_association";
         /**
          * QaiCatalogRecordReference
          * @description Canonical datasource metadata observed directly from Mongo.
@@ -727,7 +733,7 @@ export interface components {
              * Dimension
              * @enum {string}
              */
-            dimension: "series" | "year" | "language" | "journal" | "article_type";
+            dimension: "series" | "year" | "language" | "journal" | "article_type" | "subject" | "keyword";
             /**
              * Value
              * @default null
@@ -754,6 +760,13 @@ export interface components {
          * @description Generation-bound PDF evidence for book or article citations.
          */
         QaiPDFReferenceEvidence: {
+            /**
+             * Image Descriptions
+             * @description Visually validated descriptions keyed by cited image element; retained when refreshing saved references.
+             */
+            image_descriptions?: {
+                [key: string]: string;
+            };
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -979,7 +992,7 @@ export interface components {
              */
             content?: string | null;
             /** Group By */
-            group_by: ("series" | "year" | "language" | "journal" | "article_type")[];
+            group_by: ("series" | "year" | "language" | "journal" | "article_type" | "subject" | "keyword")[];
             /**
              * Id
              * @description Unique identifier of the inline reference.
@@ -1524,7 +1537,7 @@ export interface components {
              * Inline
              * @description List of inline references.
              */
-            inline?: (components["schemas"]["UIPDFHighlightReference"] | components["schemas"]["UIImageReference"] | components["schemas"]["UIVideoReference"] | components["schemas"]["UIExternalLinkReference"] | components["schemas"]["UIExternalTimedVideoReference"] | components["schemas"]["UICitationGistReference"] | components["schemas"]["UITableReference"] | components["schemas"]["UICatalogRecordReference"] | components["schemas"]["UICatalogAggregateReference"])[];
+            inline?: (components["schemas"]["UIPDFHighlightReference"] | components["schemas"]["UIImageReference"] | components["schemas"]["UIVideoReference"] | components["schemas"]["UIVideoSourceReference"] | components["schemas"]["UIExternalLinkReference"] | components["schemas"]["UIExternalTimedVideoReference"] | components["schemas"]["UICitationGistReference"] | components["schemas"]["UITableReference"] | components["schemas"]["UICatalogRecordReference"] | components["schemas"]["UICatalogAggregateReference"])[];
         };
         /**
          * UITableReference
@@ -1757,6 +1770,36 @@ export interface components {
              * @constant
              */
             type: "video";
+        };
+        /**
+         * UIVideoSourceReference
+         * @description Full original video, with moment evidence retained only on the server.
+         */
+        UIVideoSourceReference: {
+            /**
+             * Id
+             * @description Unique identifier of the inline reference.
+             */
+            id: string;
+            /**
+             * Id Datasource
+             * @description Unique identifier of the resource to which the reference is associated with.
+             */
+            id_datasource: string;
+            /**
+             * Playback Url
+             * @description Protected playback URL for the original video.
+             * @default null
+             */
+            playback_url?: string | null;
+            /** Source File Hash */
+            source_file_hash: string;
+            /**
+             * Type
+             * @default video_source
+             * @constant
+             */
+            type: "video_source";
         };
         /**
          * UserDetailLevel
