@@ -236,10 +236,7 @@ export interface components {
              */
             technicality_level?: components["schemas"]["UserTechnicalityLevel"];
         };
-        /**
-         * AskStreamEvent
-         * @description Structured event stream emitted by the `qai_ask_question` (bulk mode - legacy).
-         */
+        /** AskStreamEvent */
         AskStreamEvent: {
             /**
              * Claims
@@ -571,6 +568,46 @@ export interface components {
             text?: string | null;
         };
         /**
+         * EpubLocator
+         * @description Stable extraction-time location for evidence in a sanitized EPUB package.
+         */
+        EpubLocator: {
+            /** Evidence Hash */
+            evidence_hash: string;
+            /**
+             * Fragment
+             * @default null
+             */
+            fragment?: string | null;
+            /** Href */
+            href: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "text" | "image" | "table";
+            /** Selector */
+            selector: string;
+            /** Spine Index */
+            spine_index: number;
+            /**
+             * Text End
+             * @default null
+             */
+            text_end?: number | null;
+            /**
+             * Text Start
+             * @default null
+             */
+            text_start?: number | null;
+            /**
+             * Version
+             * @default 1
+             * @constant
+             */
+            version: 1;
+        };
+        /**
          * ExternalRAGHit
          * @description One bounded Uthereal-native retrieval hit.
          */
@@ -587,6 +624,23 @@ export interface components {
             };
             /** Rank */
             rank: number;
+        };
+        /**
+         * OriginalRowWindow
+         * @description Extractor-recorded source rows, never cell-level support or target coordinates.
+         */
+        OriginalRowWindow: {
+            /** Row End */
+            row_end: number;
+            /** Row Start */
+            row_start: number;
+            /** Sheet Name */
+            sheet_name: string;
+            /**
+             * Truncated
+             * @default false
+             */
+            truncated?: boolean;
         };
         /**
          * PdfRefreshRequest
@@ -1005,6 +1059,8 @@ export interface components {
             id_datasource: string;
             /** Observed At */
             observed_at: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
              * @default null
@@ -1057,6 +1113,8 @@ export interface components {
             links?: components["schemas"]["QaiPublicCatalogLink"][];
             /** Observed At */
             observed_at: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
              * @default null
@@ -1099,6 +1157,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
              * @default null
@@ -1210,6 +1270,11 @@ export interface components {
              */
             parent_book?: components["schemas"]["UIParentBookReference"] | null;
             /**
+             * @description Available source preview kind.
+             * @default null
+             */
+            preview?: components["schemas"]["UITextPreview"] | null;
+            /**
              * Provenance
              * @default workspace
              * @enum {string}
@@ -1246,6 +1311,42 @@ export interface components {
             year?: number | null;
         };
         /**
+         * UIEPUBHighlightReference
+         * @description Evidence in a sanitized EPUB, located without browser text search.
+         */
+        UIEPUBHighlightReference: {
+            /**
+             * Content
+             * @description Text content of the referenced evidence.
+             * @default null
+             */
+            content?: string | null;
+            /**
+             * Id
+             * @description Unique identifier of the inline reference.
+             */
+            id: string;
+            /**
+             * Id Datasource
+             * @description Unique identifier of the resource to which the reference is associated with.
+             */
+            id_datasource: string;
+            locator: components["schemas"]["EpubLocator"];
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
+            /**
+             * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
+             * @default null
+             */
+            qai_reference_binding?: components["schemas"]["QaiReferenceBinding"] | null;
+            /**
+             * Type
+             * @default epub_highlight
+             * @constant
+             */
+            type: "epub_highlight";
+        };
+        /**
          * UIExternalLinkReference
          * @description Class representing a link to an external resource.
          */
@@ -1266,11 +1367,18 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
              * @default null
              */
             qai_reference_binding?: components["schemas"]["QaiReferenceBinding"] | null;
+            /**
+             * @description Optional authorized publisher PDF navigation, separate from the cited abstract.
+             * @default null
+             */
+            source_preview?: components["schemas"]["UIPDFSourcePreview"] | null;
             /**
              * Type
              * @default external_link
@@ -1304,6 +1412,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * Platform
              * @description Public video platform hosting the evidence.
@@ -1396,6 +1506,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * Page
              * @description Page number when the image is located in a PDF.
@@ -1461,6 +1573,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * Page
              * @description Page number.
@@ -1481,6 +1595,59 @@ export interface components {
              * Width
              * @description Page width in the same coordinate space.
              */
+            width: number;
+        };
+        /**
+         * UIPDFSourcePreview
+         * @description Authorized opening-page navigation; does not change citation provenance.
+         */
+        UIPDFSourcePreview: {
+            binding: components["schemas"]["UIPDFSourcePreviewBinding"];
+            /** Highlights */
+            highlights?: components["schemas"]["UIPDFSourcePreviewHighlight"][];
+            /**
+             * Kind
+             * @default pdf
+             * @constant
+             */
+            kind: "pdf";
+            /**
+             * Page Index
+             * @default 0
+             */
+            page_index?: number;
+            /** Secure Url */
+            secure_url: string;
+        };
+        /**
+         * UIPDFSourcePreviewBinding
+         * @description Exact publisher PDF version, independent of the cited abstract evidence.
+         */
+        UIPDFSourcePreviewBinding: {
+            /** Id Database */
+            id_database: string;
+            /** Source File Fingerprint */
+            source_file_fingerprint: string;
+            /** Source Generation */
+            source_generation: string;
+        };
+        /**
+         * UIPDFSourcePreviewHighlight
+         * @description A real extracted text region located by unique complete abstract matching.
+         */
+        UIPDFSourcePreviewHighlight: {
+            /** Coordinates */
+            coordinates: [
+                number,
+                number,
+                number,
+                number
+            ];
+            /** Height */
+            height: number;
+            /** Page Index */
+            page_index: number;
+            /** Width */
             width: number;
         };
         /**
@@ -1537,7 +1704,30 @@ export interface components {
              * Inline
              * @description List of inline references.
              */
-            inline?: (components["schemas"]["UIPDFHighlightReference"] | components["schemas"]["UIImageReference"] | components["schemas"]["UIVideoReference"] | components["schemas"]["UIVideoSourceReference"] | components["schemas"]["UIExternalLinkReference"] | components["schemas"]["UIExternalTimedVideoReference"] | components["schemas"]["UICitationGistReference"] | components["schemas"]["UITableReference"] | components["schemas"]["UICatalogRecordReference"] | components["schemas"]["UICatalogAggregateReference"])[];
+            inline?: (components["schemas"]["UISourceExcerptReference"] | components["schemas"]["UIPDFHighlightReference"] | components["schemas"]["UIEPUBHighlightReference"] | components["schemas"]["UIImageReference"] | components["schemas"]["UIVideoReference"] | components["schemas"]["UIVideoSourceReference"] | components["schemas"]["UIExternalLinkReference"] | components["schemas"]["UIExternalTimedVideoReference"] | components["schemas"]["UICitationGistReference"] | components["schemas"]["UITableReference"] | components["schemas"]["UICatalogRecordReference"] | components["schemas"]["UICatalogAggregateReference"])[];
+        };
+        /**
+         * UISourceExcerptReference
+         * @description Retained private resource text; no fictitious ingestion datasource identity.
+         */
+        UISourceExcerptReference: {
+            /** Content */
+            content: string;
+            /**
+             * Id
+             * @description Canonical reference ID in evidence; display ID in UI projections.
+             */
+            id: string;
+            /** Source Id */
+            source_id: string;
+            /** Title */
+            title: string;
+            /**
+             * Type
+             * @default source_excerpt
+             * @constant
+             */
+            type: "source_excerpt";
         };
         /**
          * UITableReference
@@ -1576,6 +1766,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * @description Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL.
              * @default null
@@ -1606,6 +1798,15 @@ export interface components {
              * @constant
              */
             type: "table";
+        };
+        /** UITextPreview */
+        UITextPreview: {
+            /**
+             * Kind
+             * @default text
+             * @constant
+             */
+            kind: "text";
         };
         /**
          * UIVideoFrameReference
@@ -1696,6 +1897,8 @@ export interface components {
              * @default null
              */
             inspection_packet_id?: string | null;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * Playback Url
              * @description Short-lived capability URL bound to this exact inline interval.
@@ -1786,6 +1989,8 @@ export interface components {
              * @description Unique identifier of the resource to which the reference is associated with.
              */
             id_datasource: string;
+            /** @default null */
+            original_row_window?: components["schemas"]["OriginalRowWindow"] | null;
             /**
              * Playback Url
              * @description Protected playback URL for the original video.
