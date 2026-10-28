@@ -271,7 +271,6 @@
         "type": "object"
       },
       "AskStreamEvent": {
-        "description": "Structured event stream emitted by the `qai_ask_question` (bulk mode - legacy).",
         "properties": {
           "claims": {
             "anyOf": [
@@ -921,6 +920,95 @@
         "title": "CitationStyle",
         "type": "object"
       },
+      "EpubLocator": {
+        "additionalProperties": false,
+        "description": "Stable extraction-time location for evidence in a sanitized EPUB package.",
+        "properties": {
+          "evidence_hash": {
+            "pattern": "^[0-9a-f]{64}$",
+            "title": "Evidence Hash",
+            "type": "string"
+          },
+          "fragment": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Fragment"
+          },
+          "href": {
+            "minLength": 1,
+            "title": "Href",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "text",
+              "image",
+              "table"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "selector": {
+            "minLength": 1,
+            "title": "Selector",
+            "type": "string"
+          },
+          "spine_index": {
+            "minimum": 0,
+            "title": "Spine Index",
+            "type": "integer"
+          },
+          "text_end": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text End"
+          },
+          "text_start": {
+            "anyOf": [
+              {
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Text Start"
+          },
+          "version": {
+            "const": 1,
+            "default": 1,
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "evidence_hash",
+          "href",
+          "kind",
+          "selector",
+          "spine_index",
+          "version"
+        ],
+        "title": "EpubLocator",
+        "type": "object"
+      },
       "ExternalRAGHit": {
         "description": "One bounded Uthereal-native retrieval hit.",
         "properties": {
@@ -953,6 +1041,39 @@
           "rank"
         ],
         "title": "ExternalRAGHit",
+        "type": "object"
+      },
+      "OriginalRowWindow": {
+        "additionalProperties": false,
+        "description": "Extractor-recorded source rows, never cell-level support or target coordinates.",
+        "properties": {
+          "row_end": {
+            "minimum": 1,
+            "title": "Row End",
+            "type": "integer"
+          },
+          "row_start": {
+            "minimum": 1,
+            "title": "Row Start",
+            "type": "integer"
+          },
+          "sheet_name": {
+            "minLength": 1,
+            "title": "Sheet Name",
+            "type": "string"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "sheet_name",
+          "row_start",
+          "row_end"
+        ],
+        "title": "OriginalRowWindow",
         "type": "object"
       },
       "PdfRefreshRequest": {
@@ -1889,6 +2010,17 @@
             "title": "Observed At",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "qai_reference_binding": {
             "anyOf": [
               {
@@ -1999,6 +2131,17 @@
             "title": "Observed At",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "qai_reference_binding": {
             "anyOf": [
               {
@@ -2070,6 +2213,17 @@
             "description": "Unique identifier of the resource to which the reference is associated with.",
             "title": "Id Datasource",
             "type": "string"
+          },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "qai_reference_binding": {
             "anyOf": [
@@ -2258,6 +2412,18 @@
             "default": null,
             "description": "Book accompanying this video; does not imply that book content was inspected."
           },
+          "preview": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UITextPreview"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Available source preview kind."
+          },
           "provenance": {
             "default": "workspace",
             "enum": [
@@ -2343,6 +2509,74 @@
         "title": "UIDatasourceReference",
         "type": "object"
       },
+      "UIEPUBHighlightReference": {
+        "description": "Evidence in a sanitized EPUB, located without browser text search.",
+        "properties": {
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Text content of the referenced evidence.",
+            "title": "Content"
+          },
+          "id": {
+            "description": "Unique identifier of the inline reference.",
+            "title": "Id",
+            "type": "string"
+          },
+          "id_datasource": {
+            "description": "Unique identifier of the resource to which the reference is associated with.",
+            "title": "Id Datasource",
+            "type": "string"
+          },
+          "locator": {
+            "$ref": "#/components/schemas/EpubLocator"
+          },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "qai_reference_binding": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QaiReferenceBinding"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "type": {
+            "const": "epub_highlight",
+            "default": "epub_highlight",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "id_datasource",
+          "locator",
+          "type"
+        ],
+        "title": "UIEPUBHighlightReference",
+        "type": "object"
+      },
       "UIExternalLinkReference": {
         "description": "Class representing a link to an external resource.",
         "properties": {
@@ -2369,6 +2603,17 @@
             "title": "Id Datasource",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "qai_reference_binding": {
             "anyOf": [
               {
@@ -2380,6 +2625,18 @@
             ],
             "default": null,
             "description": "Release-bound private QAI v2 provenance used to refresh this citation without persisting a signed URL."
+          },
+          "source_preview": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UIPDFSourcePreview"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional authorized publisher PDF navigation, separate from the cited abstract."
           },
           "type": {
             "const": "external_link",
@@ -2428,6 +2685,17 @@
             "description": "Unique identifier of the resource to which the reference is associated with.",
             "title": "Id Datasource",
             "type": "string"
+          },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "platform": {
             "const": "youtube",
@@ -2587,6 +2855,17 @@
             "title": "Id Datasource",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "page": {
             "anyOf": [
               {
@@ -2699,6 +2978,17 @@
             "title": "Id Datasource",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "page": {
             "description": "Page number.",
             "title": "Page",
@@ -2738,6 +3028,122 @@
           "width"
         ],
         "title": "UIPDFHighlightReference",
+        "type": "object"
+      },
+      "UIPDFSourcePreview": {
+        "description": "Authorized opening-page navigation; does not change citation provenance.",
+        "properties": {
+          "binding": {
+            "$ref": "#/components/schemas/UIPDFSourcePreviewBinding"
+          },
+          "highlights": {
+            "items": {
+              "$ref": "#/components/schemas/UIPDFSourcePreviewHighlight"
+            },
+            "title": "Highlights",
+            "type": "array"
+          },
+          "kind": {
+            "const": "pdf",
+            "default": "pdf",
+            "title": "Kind",
+            "type": "string"
+          },
+          "page_index": {
+            "default": 0,
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "secure_url": {
+            "title": "Secure Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "binding",
+          "kind",
+          "secure_url"
+        ],
+        "title": "UIPDFSourcePreview",
+        "type": "object"
+      },
+      "UIPDFSourcePreviewBinding": {
+        "additionalProperties": false,
+        "description": "Exact publisher PDF version, independent of the cited abstract evidence.",
+        "properties": {
+          "id_database": {
+            "minLength": 1,
+            "title": "Id Database",
+            "type": "string"
+          },
+          "source_file_fingerprint": {
+            "pattern": "^[a-f0-9]{64}$",
+            "title": "Source File Fingerprint",
+            "type": "string"
+          },
+          "source_generation": {
+            "minLength": 1,
+            "title": "Source Generation",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id_database",
+          "source_generation",
+          "source_file_fingerprint"
+        ],
+        "title": "UIPDFSourcePreviewBinding",
+        "type": "object"
+      },
+      "UIPDFSourcePreviewHighlight": {
+        "description": "A real extracted text region located by unique complete abstract matching.",
+        "properties": {
+          "coordinates": {
+            "maxItems": 4,
+            "minItems": 4,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "title": "Coordinates",
+            "type": "array"
+          },
+          "height": {
+            "exclusiveMinimum": 0,
+            "title": "Height",
+            "type": "number"
+          },
+          "page_index": {
+            "maximum": 1,
+            "minimum": 0,
+            "title": "Page Index",
+            "type": "integer"
+          },
+          "width": {
+            "exclusiveMinimum": 0,
+            "title": "Width",
+            "type": "number"
+          }
+        },
+        "required": [
+          "page_index",
+          "coordinates",
+          "width",
+          "height"
+        ],
+        "title": "UIPDFSourcePreviewHighlight",
         "type": "object"
       },
       "UIParentBookLocation": {
@@ -2819,7 +3225,13 @@
             "items": {
               "anyOf": [
                 {
+                  "$ref": "#/components/schemas/UISourceExcerptReference"
+                },
+                {
                   "$ref": "#/components/schemas/UIPDFHighlightReference"
+                },
+                {
+                  "$ref": "#/components/schemas/UIEPUBHighlightReference"
                 },
                 {
                   "$ref": "#/components/schemas/UIImageReference"
@@ -2855,6 +3267,49 @@
           }
         },
         "title": "UIReferences",
+        "type": "object"
+      },
+      "UISourceExcerptReference": {
+        "additionalProperties": false,
+        "description": "Retained private resource text; no fictitious ingestion datasource identity.",
+        "properties": {
+          "content": {
+            "maxLength": 30000,
+            "minLength": 1,
+            "title": "Content",
+            "type": "string"
+          },
+          "id": {
+            "description": "Canonical reference ID in evidence; display ID in UI projections.",
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "source_id": {
+            "minLength": 1,
+            "title": "Source Id",
+            "type": "string"
+          },
+          "title": {
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "type": {
+            "const": "source_excerpt",
+            "default": "source_excerpt",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "id",
+          "source_id",
+          "title",
+          "type"
+        ],
+        "title": "UISourceExcerptReference",
         "type": "object"
       },
       "UITableReference": {
@@ -2916,6 +3371,17 @@
             "title": "Id Datasource",
             "type": "string"
           },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "qai_reference_binding": {
             "anyOf": [
               {
@@ -2969,6 +3435,21 @@
           "type"
         ],
         "title": "UITableReference",
+        "type": "object"
+      },
+      "UITextPreview": {
+        "properties": {
+          "kind": {
+            "const": "text",
+            "default": "text",
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "UITextPreview",
         "type": "object"
       },
       "UIVideoFrameReference": {
@@ -3112,6 +3593,17 @@
             "default": null,
             "description": "Opaque immutable inspection packet identity.",
             "title": "Inspection Packet Id"
+          },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "playback_url": {
             "anyOf": [
@@ -3276,6 +3768,17 @@
             "description": "Unique identifier of the resource to which the reference is associated with.",
             "title": "Id Datasource",
             "type": "string"
+          },
+          "original_row_window": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OriginalRowWindow"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "playback_url": {
             "anyOf": [

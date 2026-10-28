@@ -93,7 +93,13 @@ try {
       `Core-only install pulled in ${dependency}`,
     );
   }
-  const fixture = await readFile("examples/ask/response.ndjson", "utf8");
+  const fixtures = await Promise.all(["ask", "staging"].map(async (name) => ({
+    name,
+    wire: await readFile(`examples/${name}/response.ndjson`, "utf8"),
+    expected: JSON.parse(
+      await readFile(`examples/${name}/expected.json`, "utf8"),
+    ).finalAnswer,
+  })));
   await writeFile(
     `${core}/smoke.mjs`,
     `
@@ -104,14 +110,13 @@ import { createCortexBrowserClient } from '@uthereal-sdk/cortex/browser';
 assert.equal(SDK_VERSION, ${JSON.stringify(manifest.version)});
 assert.equal(typeof createCortexHandler, 'function');
 assert.equal(typeof createCortexBrowserClient, 'function');
-const client = new CortexClient({assistantId:'fixture-agent', apiKey:'fixture-key', baseUrl:'https://example.invalid/functions/v1/api-server-proxy'}, async () => new Response(${
-      JSON.stringify(fixture)
-    }));
-let answer;
-for await (const snapshot of readAnswers(await client.ask('owner', 'session', {message:'Garden'}))) answer = snapshot;
-assert.ok(answer.utterance.length);
-assert.ok(answer.references.inline.length);
-console.log('Installed package: Node/Deno streaming and metadata passed');
+for (const fixture of ${JSON.stringify(fixtures)}) {
+  const client = new CortexClient({assistantId:'fixture-agent', apiKey:'fixture-key', baseUrl:'https://example.invalid/functions/v1/api-server-proxy'}, async () => new Response(fixture.wire));
+  let answer;
+  for await (const snapshot of readAnswers(await client.ask('owner', 'session', {message:'Synthetic fixture'}))) answer = snapshot;
+  assert.deepEqual(answer, fixture.expected, fixture.name + ' metadata changed');
+  console.log('Installed package: Node/Deno ' + fixture.name + ' streaming and metadata passed');
+}
 `,
   );
   run(process.execPath, ["smoke.mjs"], core);
