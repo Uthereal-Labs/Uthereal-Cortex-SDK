@@ -149,9 +149,9 @@ source. Automated SDK tests cover the full server-side expiry/renewal path.
 
 ## Agent configuration and credentials
 
-Copy the assistant ID and exact environment-specific API base from Cortex Share’s
-**Copy integration instructions** action. For a manual setup, the production base
-is `https://agent.uthereal.ai/api/functions/v1/api-server-proxy`.
+Copy the assistant ID and API base from Cortex Share’s **Copy integration
+instructions** action. For a manual setup, the Cortex API base is
+`https://cortex.uthereal.ai/api/functions/v1/api-server-proxy`.
 Set these in `supabase/.env.local` (or your backend’s configuration). Create a
 scoped assistant API key separately and install it as `CORTEX_SHARED_API_KEY`
 in **your application's server secrets**. No credential is included in the repository.
