@@ -226,7 +226,7 @@ export interface components {
             /**
              * Reasoning Effort
              * @description Cortex pipeline effort: standard composes from filtered sources; high additionally plans evidence. Does not set provider reasoning effort.
-             * @default high
+             * @default standard
              * @enum {string}
              */
             reasoning_effort?: "standard" | "high";
@@ -280,6 +280,12 @@ export interface components {
              * @default null
              */
             references?: components["schemas"]["UIReferences"] | null;
+            /**
+             * Rejection Code
+             * @description Machine-readable input-policy rejection, `input_blocked.<safeguard>` (e.g. `input_blocked.toxicity`); set only when the input was rejected.
+             * @default null
+             */
+            rejection_code?: string | null;
             /**
              * Utterance
              * @description Utterance with {{CIT:...}} placeholders

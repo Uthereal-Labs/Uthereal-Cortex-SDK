@@ -41,6 +41,8 @@ export const answerSchema = z.object({
   }).nullish().transform((value) => value ?? { datasources: [], inline: [] }),
   reference_numbering: z.record(z.number()).default({}),
   claims: z.array(claimSchema).nullish().transform((value) => value ?? []),
+  // Set only when Cortex rejected the message: `input_blocked.<check>`, with `utterance` as the user-facing reason.
+  rejection_code: z.string().nullish(),
 }).passthrough();
 export type Answer = z.infer<typeof answerSchema>;
 export type InlineReference = z.infer<typeof inlineSchema>;
@@ -50,8 +52,8 @@ export const askSchema = z.object({
   citation_enrichment: z.boolean().optional(),
   reasoning_effort: z.enum(["standard", "high"]).optional(),
   message: z.string().trim().min(1).refine(
-    (value) => Array.from(value).length <= 5000,
-    "Maximum 5,000 Unicode code points",
+    (value) => Array.from(value).length <= 10000,
+    "Maximum 10,000 Unicode code points",
   ),
   detail_level: z.enum(["SUCCINCT", "BALANCED", "DETAILED"]).optional(),
   technicality_level: z.enum(["SIMPLE", "BALANCED", "TECHNICAL"]).optional(),

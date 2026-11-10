@@ -242,13 +242,13 @@
             "type": "string"
           },
           "message": {
-            "maxLength": 5000,
+            "maxLength": 10000,
             "minLength": 1,
             "title": "Message",
             "type": "string"
           },
           "reasoning_effort": {
-            "default": "high",
+            "default": "standard",
             "description": "Cortex pipeline effort: standard composes from filtered sources; high additionally plans evidence. Does not set provider reasoning effort.",
             "enum": [
               "standard",
@@ -359,6 +359,19 @@
             ],
             "default": null,
             "description": "UI-friendly references."
+          },
+          "rejection_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Machine-readable input-policy rejection, `input_blocked.<safeguard>` (e.g. `input_blocked.toxicity`); set only when the input was rejected.",
+            "title": "Rejection Code"
           },
           "utterance": {
             "description": "Utterance with {{CIT:...}} placeholders",

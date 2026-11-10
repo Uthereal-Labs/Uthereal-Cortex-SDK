@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import type { ApiAskEvent } from "../sdk/protocol/api-types.ts";
-import { answerSchema } from "../sdk/protocol/contract.ts";
+import { answerSchema, askSchema } from "../sdk/protocol/contract.ts";
 import { pdfLocation, resolveMarker } from "../sdk/protocol/citations.ts";
 import { readAnswers } from "../sdk/protocol/stream.ts";
 
@@ -50,4 +50,30 @@ Deno.test("staging evidence survives parsing and reference accumulation without 
   for (const reference of final.references.inline) {
     assertEquals(pdfLocation(reference), null);
   }
+});
+
+Deno.test("a rejected ask keeps its machine-readable rejection code", () => {
+  const parsed = answerSchema.parse({
+    utterance:
+      "Your message contains abusive or hateful language. Rephrase it respectfully and try again.",
+    interaction_id: "turn-1",
+    rejection_code: "input_blocked.toxicity",
+  });
+  assertEquals(parsed.rejection_code, "input_blocked.toxicity");
+  assertEquals(
+    answerSchema.parse({ utterance: "Answer", interaction_id: "turn-2" })
+      .rejection_code,
+    undefined,
+  );
+});
+
+Deno.test("ask messages allow up to 10,000 code points, matching the service", () => {
+  assertEquals(
+    askSchema.safeParse({ message: "🙂".repeat(10_000) }).success,
+    true,
+  );
+  assertEquals(
+    askSchema.safeParse({ message: "🙂".repeat(10_001) }).success,
+    false,
+  );
 });
