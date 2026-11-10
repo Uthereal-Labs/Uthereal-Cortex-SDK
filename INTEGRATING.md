@@ -221,13 +221,19 @@ The runnable TypeScript interfaces and runtime validators are in
 and saved context server-side. It never accepts an arbitrary URL,
 caller-supplied owner, or caller-supplied answer/reference as PDF authority.
 
-Ask messages allow 1–5,000 Unicode code points after trimming. Detail is
+Ask messages allow 1–10,000 Unicode code points after trimming. Detail is
 `SUCCINCT | BALANCED | DETAILED`; technicality is
 `SIMPLE | BALANCED | TECHNICAL`. There is no start-chat request: create and
 persist an external session UUID. Keep it stable with its owner and assistant.
 Cortex maintains session memory; add bounded application context to `message`,
 not unbounded history. Attachments, web search and external links are disabled
 for this external ask API.
+
+Cortex screens every message for credentials and unsafe content. A rejected
+message streams one answer whose `utterance` is the user-facing reason and whose
+`rejection_code` is `input_blocked.<check>`: `character_limit`, `regex_builtin`
+(a credential), `prompt_injection`, `toxicity`, `violence`, `self_harm` or
+`sexual`. Show the utterance as is; branch on the code, never on its text.
 
 RAG queries allow 1–500 characters, `max_results` is 1–20 (default 10), and
 datasource filters allow up to 50 IDs. RAG returns

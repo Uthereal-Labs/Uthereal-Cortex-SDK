@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Type the `rejection_code` answer field that Cortex sets when it rejects a message (`input_blocked.<check>`), and document the checks.
+- Raise the Ask message limit to 10,000 Unicode code points and the default `reasoning_effort` to `standard`, matching the service.
+
 ## 1.1.0
 
 - Publish the validated `@uthereal-sdk/cortex` ESM package with GitHub provenance.
