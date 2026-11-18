@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Accept only the `api-server-proxy` base path. The hosted staging proxy (`api-server-proxy-staging`) is retired.
+- Rename the synthetic evidence replay fixture from `examples/staging` to `examples/evidence`.
 - Type the `rejection_code` answer field that Cortex sets when it rejects a message (`input_blocked.<check>`), and document the checks.
 - Raise the Ask message limit to 10,000 Unicode code points and the default `reasoning_effort` to `standard`, matching the service.
 

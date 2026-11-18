@@ -93,7 +93,7 @@ try {
       `Core-only install pulled in ${dependency}`,
     );
   }
-  const fixtures = await Promise.all(["ask", "staging"].map(async (name) => ({
+  const fixtures = await Promise.all(["ask", "evidence"].map(async (name) => ({
     name,
     wire: await readFile(`examples/${name}/response.ndjson`, "utf8"),
     expected: JSON.parse(

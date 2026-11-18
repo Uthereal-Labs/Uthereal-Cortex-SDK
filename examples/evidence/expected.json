@@ -2,7 +2,7 @@
   "snapshotCount": 3,
   "finalAnswer": {
     "utterance": "Synthetic evidence preserved {{CIT:epub,excerpt,external,rows}}",
-    "interaction_id": "synthetic-staging-turn",
+    "interaction_id": "synthetic-evidence-turn",
     "references": {
       "datasources": [
         {
