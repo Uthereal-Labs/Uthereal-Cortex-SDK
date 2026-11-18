@@ -25,7 +25,7 @@ export class CortexClient {
     if (
       this.base.username || this.base.password || this.base.search ||
       this.base.hash ||
-      !/^\/.*functions\/v1\/api-server-proxy(?:-staging)?$/.test(
+      !/^\/.*functions\/v1\/api-server-proxy$/.test(
         this.base.pathname,
       ) ||
       (this.base.protocol !== "https:" &&

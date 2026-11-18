@@ -62,8 +62,7 @@ Deno.test("SDK adapters preserve saved identity, renew once, enforce ownership a
   const config = {
     assistantId: "fixture-agent",
     apiKey: "fixture-key",
-    baseUrl:
-      "https://example.invalid/api/functions/v1/api-server-proxy-staging",
+    baseUrl: "https://example.invalid/api/functions/v1/api-server-proxy",
   };
   const handler = createCortexHandler({
     config,
@@ -172,8 +171,7 @@ Deno.test("cancelling a preview aborts upstream and never persists it; RAG compo
     config: {
       assistantId: "agent",
       apiKey: "fixture",
-      baseUrl:
-        "https://example.invalid/api/functions/v1/api-server-proxy-staging",
+      baseUrl: "https://example.invalid/api/functions/v1/api-server-proxy",
     },
     allowedOrigin: "https://app.invalid",
     authenticate: async () => ({ id: "owner", externalUserId: "external" }),

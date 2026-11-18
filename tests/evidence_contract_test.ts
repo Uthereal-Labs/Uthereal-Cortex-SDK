@@ -4,8 +4,8 @@ import { answerSchema, askSchema } from "../sdk/protocol/contract.ts";
 import { pdfLocation, resolveMarker } from "../sdk/protocol/citations.ts";
 import { readAnswers } from "../sdk/protocol/stream.ts";
 
-Deno.test("staging evidence survives parsing and reference accumulation without inventing PDF geometry", async () => {
-  const wire = await Deno.readTextFile("examples/staging/response.ndjson");
+Deno.test("evidence survives parsing and reference accumulation without inventing PDF geometry", async () => {
+  const wire = await Deno.readTextFile("examples/evidence/response.ndjson");
   const metadata = JSON.parse(wire.split("\n")[0]) as ApiAskEvent;
   // Narrow the actual generated wire union, including variants absent on main.
   for (const reference of metadata.references?.inline ?? []) {
@@ -35,7 +35,7 @@ Deno.test("staging evidence survives parsing and reference accumulation without 
     snapshots.push(snapshot);
   }
   const expected = JSON.parse(
-    await Deno.readTextFile("examples/staging/expected.json"),
+    await Deno.readTextFile("examples/evidence/expected.json"),
   );
   assertEquals(snapshots.length, expected.snapshotCount);
   const final = snapshots.at(-1)!;
