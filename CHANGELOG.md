@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0
 
 - Accept only the `api-server-proxy` base path. The hosted staging proxy (`api-server-proxy-staging`) is retired.
 - Rename the synthetic evidence replay fixture from `examples/staging` to `examples/evidence`.
