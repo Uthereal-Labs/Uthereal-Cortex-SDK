@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.1
+
+- Fix `pdfLocation()`: read PDF highlight coordinates with a bottom-left origin. Before, `PdfEvidence` and `CitedAnswer` marked a box mirrored top to bottom, on other lines than the cited passage.
+- Change the synthetic Ask fixture to the bottom-left coordinates of the box drawn in its PDF.
+- Document the coordinate origin in `INTEGRATING.md` and the public API contract.
+- Document that `agent.uthereal.ai` is an alias of the canonical `cortex.uthereal.ai` API base.
+
 ## 1.2.0
 
 - Accept only the `api-server-proxy` base path. The hosted staging proxy (`api-server-proxy-staging`) is retired.

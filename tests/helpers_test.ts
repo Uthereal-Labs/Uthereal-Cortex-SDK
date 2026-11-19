@@ -118,7 +118,7 @@ Deno.test("source-page geometry handles page zero, middle and final source pages
   for (const page of [0, 1, 20]) {
     const location = pdfLocation({ ...answer().references.inline[0], page });
     assertEquals(location?.slicePage, page === 0 ? 1 : 2);
-    assertEquals(location?.top, 10);
+    assertEquals(location?.top, 80);
     assertEquals(location?.height, 10);
   }
   assertEquals(pdfLocation(answer().references.inline[1]), null);
@@ -129,6 +129,16 @@ Deno.test("source-page geometry handles page zero, middle and final source pages
     }),
     null,
   );
+});
+
+Deno.test("PDF coordinates use a bottom-left origin", () => {
+  const inline = answer().references.inline[0];
+  const nearTop = pdfLocation({ ...inline, coordinates: [10, 180, 30, 190] });
+  assertEquals(nearTop?.top, 5);
+  assertEquals(nearTop?.height, 5);
+  const nearBottom = pdfLocation({ ...inline, coordinates: [10, 0, 30, 20] });
+  assertEquals(nearBottom?.top, 90);
+  assertEquals(nearBottom?.height, 10);
 });
 
 Deno.test("stream rejects malformed/status-only/truncated application responses and preserves diagnostics", async () => {

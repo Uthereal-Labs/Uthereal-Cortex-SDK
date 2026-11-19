@@ -25,7 +25,7 @@ your own test harness. Ask streams snapshots; RAG returns one JSON result.
 Install an exact release and commit your application's lockfile:
 
 ```sh
-pnpm add --save-exact @uthereal-sdk/cortex@1.2.0
+pnpm add --save-exact @uthereal-sdk/cortex@1.2.1
 ```
 
 Use your application's existing package manager (`npm install` also works).
@@ -56,7 +56,7 @@ and rendering verification.
 
 ### Source-copy alternative
 
-Clone/download the pinned v1.2.0 GitHub revision and copy `sdk/` intact. Use
+Clone/download the pinned v1.2.1 GitHub revision and copy `sdk/` intact. Use
 `./sdk/server.ts`, `./sdk/browser.ts`, etc. instead of package imports below, and
 install Zod 3.23.8 plus the optional dependencies you use. The complete runnable
 demo pins React 19; existing apps can retain React 18 or 19 and matching types.
@@ -152,6 +152,8 @@ source. Automated SDK tests cover the full server-side expiry/renewal path.
 Copy the assistant ID and API base from Cortex Share’s **Copy integration
 instructions** action. For a manual setup, the Cortex API base is
 `https://cortex.uthereal.ai/api/functions/v1/api-server-proxy`.
+`agent.uthereal.ai` is an alias of the same site. The hosted staging proxy
+(`api-server-proxy-staging`) is retired; change any setup that still uses it.
 Set these in `supabase/.env.local` (or your backend’s configuration). Create a
 scoped assistant API key separately and install it as `CORTEX_SHARED_API_KEY`
 in **your application's server secrets**. No credential is included in the repository.
@@ -263,7 +265,9 @@ saved answers.
 - `reference_numbering` controls display labels; never replace durable IDs with
   sequential UI numbering.
 - Concrete `pdf_highlight` entries have datasource ID, physical zero-based
-  `page`, flat `[x0,y0,x1,y1]` coordinates and source dimensions. Text-only
+  `page`, flat `[x0,y0,x1,y1]` coordinates and source dimensions. Coordinates
+  use PDF page units with a bottom-left origin: y1 is the top edge of the box.
+  `pdfLocation()` converts them to top-left percentages. Text-only
   gists and unsupported media stay textual; do not invent geometry or turn
   arbitrary links into PDF URLs.
 - The example renders answer text safely with citation controls. Integrate your
