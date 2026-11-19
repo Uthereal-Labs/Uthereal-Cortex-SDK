@@ -1487,7 +1487,7 @@ export interface components {
             content?: string | null;
             /**
              * Coordinates
-             * @description (x0, y0, x1, y1) in PDF coordinate space when available.
+             * @description (x0, y0, x1, y1) in PDF page units with a bottom-left origin (y1 is the top edge), when available.
              * @default null
              */
             coordinates?: [
@@ -1556,7 +1556,7 @@ export interface components {
             content?: string | null;
             /**
              * Coordinates
-             * @description (x0, y0, x1, y1) in PDF coordinate space.
+             * @description (x0, y0, x1, y1) in PDF page units with a bottom-left origin (y1 is the top edge).
              */
             coordinates: [
                 number,

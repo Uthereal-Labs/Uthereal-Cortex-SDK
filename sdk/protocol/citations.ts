@@ -74,7 +74,10 @@ export function resolveMarker(
   );
 }
 
-/** Source page is zero-based; slice page is one-based. Rectangle values are percentages. */
+/**
+ * Source page is zero-based; slice page is one-based. Rectangle values are
+ * percentages measured from the top-left corner of the page, for CSS placement.
+ */
 export interface PdfLocation {
   sourcePage: number;
   slicePage: number;
@@ -84,6 +87,10 @@ export interface PdfLocation {
   height: number;
 }
 
+/**
+ * `coordinates` are `[x0, y0, x1, y1]` in PDF page units with a bottom-left
+ * origin, so y1 is the top edge of the box.
+ */
 export function pdfLocation(reference: InlineReference): PdfLocation | null {
   if (
     reference.type !== "pdf_highlight" || reference.page == null ||
@@ -99,7 +106,7 @@ export function pdfLocation(reference: InlineReference): PdfLocation | null {
     sourcePage: reference.page,
     slicePage: reference.page - Math.max(0, reference.page - 1) + 1,
     left: x0 / reference.width * 100,
-    top: y0 / reference.height * 100,
+    top: (reference.height - y1) / reference.height * 100,
     width: (x1 - x0) / reference.width * 100,
     height: (y1 - y0) / reference.height * 100,
   };
